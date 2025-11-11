@@ -140,10 +140,16 @@ function buildPostPage(post, allPosts, index) {
     .replace(/\{\{url\}\}/g, url)
     .replace(/\{\{image\}\}/g, post.image || 'https://ellenseon.github.io/TIL/assets/images/profile/Ellen.jpg')
     .replace(/\{\{encodedTitle\}\}/g, encodedTitle)
-    .replace(/\{\{encodedUrl\}\}/g, encodedUrl)
-    .replace(/\/TIL\//g, BASE_PATH + '/')
-    .replace(/href="\//g, `href="${BASE_PATH}/`)
-    .replace(/src="\//g, `src="${BASE_PATH}/`);
+    .replace(/\{\{encodedUrl\}\}/g, encodedUrl);
+  
+  // 경로 치환 (템플릿의 /TIL/를 BASE_PATH로 변경)
+  if (BASE_PATH === '') {
+    // 로컬 모드: /TIL/ 제거
+    html = html.replace(/\/TIL\//g, '/');
+  } else {
+    // 프로덕션 모드: 이미 /TIL/이 있으므로 그대로 유지
+    // 중복 방지를 위해 이미 /TIL/이 있으면 변경하지 않음
+  }
   
   if (prevPost) {
     html = html.replace(/\{\{prevPost\}\}/g, `<a href="${BASE_PATH}/posts/${prevPost.slug}.html" class="nav-link">← ${prevPost.title}</a>`);
@@ -177,12 +183,19 @@ function buildIndexPage(posts, searchData) {
   // 검색 인덱스와 포스트 데이터를 JSON으로 이스케이프
   const escapedData = JSON.stringify(searchData);
   
-  return template
+  let html = template
     .replace(/\{\{posts\}\}/g, postsHtml)
-    .replace(/\{\{searchIndex\}\}/g, escapedData)
-    .replace(/\/TIL\//g, BASE_PATH + '/')
-    .replace(/href="\//g, `href="${BASE_PATH}/`)
-    .replace(/src="\//g, `src="${BASE_PATH}/`);
+    .replace(/\{\{searchIndex\}\}/g, escapedData);
+  
+  // 경로 치환 (템플릿의 /TIL/를 BASE_PATH로 변경)
+  if (BASE_PATH === '') {
+    // 로컬 모드: /TIL/ 제거
+    html = html.replace(/\/TIL\//g, '/');
+  } else {
+    // 프로덕션 모드: 이미 /TIL/이 있으므로 그대로 유지
+  }
+  
+  return html;
 }
 
 function copyAssets() {
