@@ -52,5 +52,5 @@ Every TIL entry follows this structure:
 ---
 
 📍 **Created by:** [Ellen Seon](https://github.com/ellenseon)  
-📬 **Contact:** [ellenseon@gmail.com](mailto:ellenseon@gmail.com)  
+📬 **Contact:** [ellenseon@gmail.com](mailto:ellenseon.official@gmail.com)  
 📅 **Last Updated:** November 2025
