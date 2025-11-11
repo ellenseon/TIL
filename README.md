@@ -1,7 +1,30 @@
 # TIL - Today I Learned
 
+> 정적 사이트 생성기를 사용한 개인 학습 블로그
 
-## 시작하기
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![GitHub Pages](https://img.shields.io/badge/GitHub-Pages-blue.svg)](https://pages.github.com/)
+
+## 📋 목차
+
+- [시작하기](#-시작하기)
+  - [설치](#설치)
+  - [빌드](#빌드)
+  - [개발 모드](#개발-모드)
+  - [로컬 서버 실행](#로컬-서버-실행)
+- [포스트 작성 가이드](#-포스트-작성-가이드)
+  - [포스트 파일 생성](#포스트-파일-생성)
+  - [Front Matter 형식](#front-matter-형식)
+  - [시리즈 사용하기](#시리즈-사용하기)
+  - [태그 사용하기](#태그-사용하기)
+  - [드래프트 포스트](#드래프트-포스트)
+- [프로젝트 구조](#-프로젝트-구조)
+- [커스터마이징](#-커스터마이징)
+- [배포](#-배포)
+- [팁](#-팁)
+- [라이센스](#-라이센스)
+
+## 🚀 시작하기
 
 ### 설치
 
@@ -11,33 +34,35 @@ npm install
 
 ### 빌드
 
-**프로덕션 빌드** (GitHub Pages 배포용):
+#### 프로덕션 빌드 (GitHub Pages 배포용)
+
 ```bash
 npm run build
 ```
 
-**로컬 빌드** (로컬 테스트용):
+#### 로컬 빌드 (로컬 테스트용)
+
 ```bash
 npm run build:local
 ```
 
-### 개발 모드 (자동 재빌드)
+### 개발 모드
+
+파일 변경 시 자동으로 재빌드됩니다.
 
 ```bash
 npm run dev
 ```
 
-파일 변경 시 자동으로 재빌드됩니다.
-
 ### 로컬 서버 실행
+
+빌드 후 `http://localhost:8080`에서 확인할 수 있습니다.
 
 ```bash
 npm run serve
 ```
 
-빌드 후 `http://localhost:8080`에서 확인할 수 있습니다.
-
-## 포스트 작성 가이드
+## 📝 포스트 작성 가이드
 
 ### 포스트 파일 생성
 
@@ -65,7 +90,7 @@ draft: false
 ### 필드 설명
 
 | 필드 | 필수 | 설명 | 예시 |
-|------|------|------|------|
+|:-----|:----:|:-----|:-----|
 | `title` | ✅ | 포스트 제목 | `JavaScript Array Methods 정리` |
 | `date` | ✅ | 작성일 (YYYY-MM-DD) | `2024-01-15` |
 | `series` | ❌ | 시리즈 이름 (같은 이름의 포스트가 시리즈로 묶임) | `JavaScript 학습하기` |
@@ -181,7 +206,7 @@ draft: true
 ---
 ```
 
-## 프로젝트 구조
+## 📁 프로젝트 구조
 
 ```
 TIL/
@@ -196,15 +221,15 @@ TIL/
 └── package.json
 ```
 
-## 커스터마이징
+## 🎨 커스터마이징
 
 ### 프로필 정보 변경
 
 `src/templates/index.html`, `src/templates/about.html` 등에서 프로필 정보를 수정할 수 있습니다:
 
-- 프로필 이미지: `assets/images/profile/Ellen.jpg`
-- 이름: `Ellen Seon`
-- 설명: `If you know Ellen, you will absolutely love her.`
+- **프로필 이미지**: `assets/images/profile/Ellen.jpg`
+- **이름**: `Ellen Seon`
+- **설명**: `If you know Ellen, you will absolutely love her.`
 
 ### 스타일 수정
 
@@ -221,7 +246,7 @@ CSS 변수를 사용하여 일관된 디자인을 유지합니다:
 }
 ```
 
-## 배포
+## 🚀 배포
 
 ### GitHub Pages 배포
 
@@ -245,7 +270,7 @@ npm run serve
 
 `http://localhost:8080`에서 확인할 수 있습니다.
 
-## 팁
+## 💡 팁
 
 ### 포스트 작성 팁
 
@@ -257,12 +282,14 @@ npm run serve
 
 ### 마크다운 팁
 
-- 코드 인라인: \`코드\`
-- 코드 블록: \`\`\`언어
-- 링크: `[텍스트](URL)`
-- 이미지: `![설명](경로)`
-- 강조: `**굵게**`, `*기울임*`
+| 문법 | 설명 | 예시 |
+|:-----|:-----|:-----|
+| 코드 인라인 | 인라인 코드 | `` `코드` `` |
+| 코드 블록 | 코드 블록 | ` ```언어 ` |
+| 링크 | 하이퍼링크 | `[텍스트](URL)` |
+| 이미지 | 이미지 삽입 | `![설명](경로)` |
+| 강조 | 텍스트 강조 | `**굵게**`, `*기울임*` |
 
-## 라이센스
+## 📄 라이센스
 
-MIT License
+이 프로젝트는 [MIT License](https://opensource.org/licenses/MIT) 하에 배포됩니다.

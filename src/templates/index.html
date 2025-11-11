@@ -56,41 +56,43 @@
   </header>
   
   <main class="main-container">
-    <aside class="sidebar">
-      <div class="tags-sidebar-wrapper">
-        <button class="tags-toggle" id="tags-toggle" aria-label="태그 목록 토글">
-          <span class="tags-toggle-text">태그 목록</span>
-          <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <path d="M6 9l6 6 6-6"/>
-          </svg>
-        </button>
-        <div class="tags-sidebar" id="tags-sidebar">
-          {{tagsSidebar}}
-        </div>
+    <div class="search-bar">
+      <div class="search-box-small">
+        <input type="text" id="search-input" placeholder="검색...">
+        <div id="search-results"></div>
       </div>
-    </aside>
-    <div class="content-area">
-      <div class="content-header">
-        <div class="search-box-small">
-          <input type="text" id="search-input" placeholder="검색...">
-          <div id="search-results"></div>
-        </div>
-      </div>
-      <div class="tags-sidebar-mobile">
+    </div>
+    <div class="main-content-wrapper">
+      <aside class="sidebar">
         <div class="tags-sidebar-wrapper">
-          <button class="tags-toggle" id="tags-toggle-mobile" aria-label="태그 목록 토글">
+          <button class="tags-toggle" id="tags-toggle" aria-label="태그 목록 토글">
             <span class="tags-toggle-text">태그 목록</span>
             <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M6 9l6 6 6-6"/>
             </svg>
           </button>
-          <div class="tags-sidebar" id="tags-sidebar-mobile">
+          <div class="tags-sidebar" id="tags-sidebar">
             {{tagsSidebar}}
           </div>
         </div>
-      </div>
-      <div class="posts-list">
-        {{posts}}
+      </aside>
+      <div class="content-area">
+        <div class="tags-sidebar-mobile">
+          <div class="tags-sidebar-wrapper">
+            <button class="tags-toggle" id="tags-toggle-mobile" aria-label="태그 목록 토글">
+              <span class="tags-toggle-text">태그 목록</span>
+              <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M6 9l6 6 6-6"/>
+              </svg>
+            </button>
+            <div class="tags-sidebar" id="tags-sidebar-mobile">
+              {{tagsSidebar}}
+            </div>
+          </div>
+        </div>
+        <div class="posts-list">
+          {{posts}}
+        </div>
       </div>
     </div>
   </main>
@@ -113,14 +115,25 @@
     // 태그 목록 토글 (모바일)
     const tagsToggleMobile = document.getElementById('tags-toggle-mobile');
     const tagsSidebarMobile = document.getElementById('tags-sidebar-mobile');
+    const tagsWrapperMobile = tagsToggleMobile?.closest('.tags-sidebar-wrapper');
     
     if (tagsToggleMobile && tagsSidebarMobile) {
       // 기본적으로 접힘 상태
       tagsSidebarMobile.classList.add('collapsed');
+      if (tagsWrapperMobile) {
+        tagsWrapperMobile.classList.add('collapsed-wrapper');
+      }
       
       tagsToggleMobile.addEventListener('click', () => {
-        tagsSidebarMobile.classList.toggle('collapsed');
+        const isCollapsed = tagsSidebarMobile.classList.toggle('collapsed');
         tagsToggleMobile.classList.toggle('active');
+        if (tagsWrapperMobile) {
+          if (isCollapsed) {
+            tagsWrapperMobile.classList.add('collapsed-wrapper');
+          } else {
+            tagsWrapperMobile.classList.remove('collapsed-wrapper');
+          }
+        }
       });
     }
   </script>

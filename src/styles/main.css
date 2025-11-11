@@ -275,16 +275,33 @@ body {
 /* Main Container - Velog Style */
 main.main-container {
   display: flex !important;
-  flex-direction: row;
+  flex-direction: column;
   max-width: 1200px;
   margin: 0 auto;
   padding: var(--spacing-xl);
-  gap: var(--spacing-xl);
-  align-items: flex-start;
+  gap: var(--spacing-lg);
   width: 100%;
   box-sizing: border-box;
   flex: 1;
   min-height: calc(100vh - 400px);
+}
+
+.search-bar {
+  width: 100%;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  margin-bottom: 0;
+  flex-shrink: 0;
+}
+
+.main-content-wrapper {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-xl);
+  align-items: flex-start;
+  width: 100%;
+  flex: 1;
 }
 
 main.main-container aside.sidebar {
@@ -295,6 +312,9 @@ main.main-container aside.sidebar {
   height: fit-content;
   padding: 0;
   margin: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
 }
 
 main.main-container .content-area {
@@ -307,13 +327,6 @@ main.main-container .content-area {
   margin: 0;
 }
 
-.content-header {
-  display: flex;
-  justify-content: flex-end;
-  align-items: flex-start;
-  margin-bottom: var(--spacing-lg);
-  width: 100%;
-}
 
 /* Tags Sidebar */
 .tags-sidebar-wrapper {
@@ -322,10 +335,7 @@ main.main-container .content-area {
 
 .tags-toggle {
   width: 100%;
-  padding-top: calc(var(--spacing-xl) + var(--spacing-lg) + 2.9rem);
-  padding-right: var(--spacing-md);
-  padding-bottom: var(--spacing-md);
-  padding-left: var(--spacing-xl);
+  padding: var(--spacing-md) var(--spacing-lg);
   background: transparent;
   border: none;
   border-bottom: 1px solid var(--border-color);
@@ -335,7 +345,7 @@ main.main-container .content-area {
   cursor: pointer;
   transition: all 0.2s ease;
   display: flex;
-  align-items: flex-start;
+  align-items: center;
   justify-content: space-between;
   gap: var(--spacing-sm);
   line-height: 1.4;
@@ -358,18 +368,19 @@ main.main-container .content-area {
   background-color: transparent;
   border: none;
   border-bottom: 1px solid var(--border-color);
-  padding: var(--spacing-xl);
+  padding: 0;
   transition: all 0.3s ease;
   overflow: hidden;
   max-height: 0;
   opacity: 0;
-  padding: 0 var(--spacing-xl);
+  margin: 0;
 }
 
 .tags-sidebar:not(.collapsed) {
   max-height: 1000px;
   padding: var(--spacing-xl);
   opacity: 1;
+  border-bottom: 1px solid var(--border-color);
 }
 
 .tags-title {
@@ -1122,32 +1133,36 @@ main.main-container .content-area {
     gap: var(--spacing-lg);
   }
   
+  .search-bar {
+    width: 100%;
+    order: 1;
+  }
+  
+  .main-content-wrapper {
+    flex-direction: column;
+    order: 2;
+  }
+  
   main.main-container aside.sidebar {
     display: none;
   }
   
   main.main-container .content-area {
     max-width: 100%;
-    order: 1;
     width: 100%;
-  }
-  
-  .content-header {
-    order: 1;
-    width: 100%;
-    justify-content: flex-end;
   }
   
   .tags-sidebar-mobile {
     display: block;
-    order: 2;
-    margin-bottom: var(--spacing-lg);
     width: 100%;
   }
   
-  .posts-list {
-    order: 3;
-    width: 100%;
+  .tags-sidebar-mobile .tags-sidebar-wrapper {
+    margin-bottom: var(--spacing-lg);
+  }
+  
+  .tags-sidebar-mobile .tags-sidebar-wrapper.collapsed-wrapper {
+    margin-bottom: 0;
   }
   
   .tags-toggle {
@@ -1156,6 +1171,12 @@ main.main-container .content-area {
   
   .tags-sidebar {
     border-top: 1px solid var(--border-color);
+  }
+  
+  .tags-sidebar.collapsed {
+    border: none;
+    margin: 0;
+    padding: 0;
   }
 }
 
@@ -1261,5 +1282,6 @@ main.main-container .content-area {
   .tags-sidebar {
     position: static;
   }
+  
 }
 
