@@ -1,56 +1,44 @@
-# 🌿 Ellen’s TIL (Today I Learned)
+# 🌿 Ellen’s TIL: Today I Learned
 
-Welcome to my **Today I Learned (TIL)** repository —  
-a daily record of my progress across technology, creativity, and personal growth.
-
----
-
-## 🧭 Focus Areas
-
-- **🎓 Technical Education** — Designing and recording AWS / Cloud Computing lectures.  
-- **🚀 Startup** — Building *VibeDive*, an AI-based CBT self-care MVP.  
-- **📈 Investment** — Practicing data-driven, company-based investment analysis.  
-- **🎹 Music** — Jazz harmony, composition, and emotional instrumental production.  
-- **💪 Lifestyle & Balance** — Strength, mindfulness, and minimalist living.
+하루 동안의 배움과 성장을 기록하는 공간입니다.  
+기술, 창업, 투자, 음악, 그리고 자기관리까지
+다양한 분야에서의 배움을 **하루 단위로 체계화**하고 기록합니다.
 
 ---
 
-## ✏️ Purpose
+## 🧭 주요 영역 (Focus Areas)
 
-> “Learning fades if not recorded.  
-> Writing transforms it into growth.”
-
-I maintain this TIL to:
-- Track and systematize learning across disciplines.  
-- Convert small daily progress into long-term consistency.  
-- Reflect on what’s working — and what’s not.
-
-Each log entry represents an iteration, not perfection.
+- **🎓 기술 강의** — AWS 및 클라우드 컴퓨팅 실습형 강의 기획 및 촬영  
+- **🚀 창업** — AI 기반 CBT 셀프케어 앱 *VibeDive* 개발  
+- **📈 투자** — 기업 분석, 투자 사고 훈련  
+- **🎹 음악** — 재즈 화성학, 작곡, 영상음악 작업  
+- **💪 라이프스타일 & 밸런스** — 운동, 수면, 미니멀리즘을 통한 균형 유지
 
 ---
 
-## 🗂 Writing Format
+## ✏️ 작성 목적 (Purpose)
 
-Every TIL entry follows this structure:
+> “기록하지 않으면 배움은 사라지고,  
+> 기록하면 성장으로 남는다.”
 
-1. **Today’s Work**  
-2. **What I Learned / Reflections**  
-3. **Proud Moments**  
-4. **Tasks Missed & Why**  
-5. **Balance Check**  
-6. **Tomorrow’s Focus**  
-7. **One-line Reflection**
+이 TIL은 다음의 목표로 운영됩니다:
+- 하루의 배움을 **구체적 실행으로 연결**하기  
+- 각 분야의 학습을 **체계화하고 누적**하기  
+- 완벽보다는 **꾸준함과 성찰**에 집중하기
+  
+---
+
+## 🗂 작성 형식 (Writing Format)
+
+하루의 TIL은 아래 구조로 작성됩니다:
+
+1. **오늘 할 일**  
+2. **오늘 한 일 / 하지 못한 일**  
+3. **오늘 배운 것 / 내 생각**  
+4. **내일 할 일**
 
 ---
 
-## 💡 Core Philosophy
-
-> “Consistency beats intensity.”  
-> Through daily reflection, I aim to grow deliberately —  
-> balancing logic, emotion, and execution.
-
----
-
-📍 **Created by:** [Ellen Seon](https://github.com/ellenseon)  
-📬 **Contact:** [ellenseon@gmail.com](mailto:ellenseon.official@gmail.com)  
-📅 **Last Updated:** November 2025
+📍 **작성자:** [Ellen Seon](https://github.com/ellenseon)  
+📬 **연락처:** [ellenseon@gmail.com](mailto:ellenseon@gmail.com)  
+📅 **최근 업데이트:** 2025년 11월
