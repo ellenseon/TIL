@@ -1,0 +1,23 @@
+{
+  "name": "til-blog",
+  "version": "1.0.0",
+  "description": "Today I Learned - 노트형 블로그",
+  "main": "build.js",
+  "scripts": {
+    "build": "node build.js",
+    "dev": "node build.js --watch",
+    "serve": "npx http-server dist -p 8080"
+  },
+  "keywords": ["blog", "til", "static-site"],
+  "author": "ellenseon",
+  "license": "MIT",
+  "dependencies": {
+    "marked": "^11.1.1",
+    "front-matter": "^4.0.2",
+    "lunr": "^2.3.9",
+    "rss": "^1.2.2",
+    "chokidar": "^3.5.3"
+  },
+  "devDependencies": {}
+}
+

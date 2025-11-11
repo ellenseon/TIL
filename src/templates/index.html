@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TIL - Today I Learned</title>
+  <meta name="description" content="Today I Learned 블로그 - 개발 노트와 학습 기록">
+  <meta name="author" content="ellenseon">
+  
+  <!-- Open Graph / Facebook -->
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://ellenseon.github.io/TIL/">
+  <meta property="og:title" content="TIL - Today I Learned">
+  <meta property="og:description" content="Today I Learned 블로그 - 개발 노트와 학습 기록">
+  <meta property="og:image" content="https://ellenseon.github.io/TIL/assets/images/profile/Ellen.jpg">
+  
+  <!-- Twitter -->
+  <meta property="twitter:card" content="summary_large_image">
+  <meta property="twitter:url" content="https://ellenseon.github.io/TIL/">
+  <meta property="twitter:title" content="TIL - Today I Learned">
+  <meta property="twitter:description" content="Today I Learned 블로그 - 개발 노트와 학습 기록">
+  <meta property="twitter:image" content="https://ellenseon.github.io/TIL/assets/images/profile/Ellen.jpg">
+  
+  <link rel="stylesheet" href="/TIL/styles/main.css">
+  <link rel="stylesheet" href="/TIL/styles/prism-github-dark.css">
+  <link rel="alternate" type="application/rss+xml" title="TIL RSS Feed" href="/TIL/rss.xml">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="header-content">
+        <img src="/TIL/assets/images/profile/Ellen.jpg" alt="Profile" class="profile-image">
+        <div>
+          <h1><a href="/TIL/">TIL</a></h1>
+          <p class="subtitle">Today I Learned</p>
+        </div>
+      </div>
+      <nav>
+        <a href="/TIL/">Home</a>
+        <a href="/TIL/rss.xml" target="_blank">RSS</a>
+      </nav>
+    </div>
+  </header>
+  
+  <main class="container">
+    <div class="search-box">
+      <input type="text" id="search-input" placeholder="검색...">
+      <div id="search-results"></div>
+    </div>
+    
+    <div class="posts-list">
+      {{posts}}
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2024 ellenseon. <a href="https://github.com/ellenseon/TIL/blob/main/LICENSE">MIT License</a></p>
+    </div>
+  </footer>
+  
+  <script>
+    const searchIndex = {{searchIndex}};
+  </script>
+  <script src="/TIL/scripts/lunr.min.js"></script>
+  <script src="/TIL/scripts/search.js"></script>
+</body>
+</html>
+
