@@ -524,7 +524,8 @@ function buildSeriesPage(seriesName, posts) {
   const seriesSlug = slugify(seriesName);
   
   const postsHtml = posts.map((post, index) => {
-    const relativeDate = getRelativeDate(post.date);
+    const postDate = parseKoreanDate(post.date);
+    const isoDate = postDate.toISOString();
     return `
     <article class="series-post-item">
       <div class="series-post-number">${index + 1}</div>
@@ -534,7 +535,7 @@ function buildSeriesPage(seriesName, posts) {
         <div class="post-footer-meta">
           <div class="post-tags"></div>
           <div class="post-meta-info">
-            <span class="post-date">${relativeDate}</span>
+            <span class="post-date" data-post-date="${isoDate}">계산 중...</span>
           </div>
         </div>
       </div>
@@ -589,8 +590,10 @@ ${tagsList}
   `;
   
   // 포스트 HTML 생성 (velog 스타일)
+  // ISO 8601 형식으로 날짜 저장 (클라이언트 측에서 상대 시간 계산)
   const postsHtml = posts.map(post => {
-    const relativeDate = getRelativeDate(post.date);
+    const postDate = parseKoreanDate(post.date);
+    const isoDate = postDate.toISOString();
     
     return `
       <article class="post-preview">
@@ -601,7 +604,7 @@ ${tagsList}
             ${(post.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
           </div>
           <div class="post-meta-info">
-            <span class="post-date">${relativeDate}</span>
+            <span class="post-date" data-post-date="${isoDate}">계산 중...</span>
           </div>
         </div>
       </article>
