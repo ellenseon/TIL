@@ -198,6 +198,22 @@ function buildIndexPage(posts, searchData) {
   return html;
 }
 
+function buildAboutPage() {
+  const template = loadTemplate('about.html');
+  
+  let html = template;
+  
+  // 경로 치환 (템플릿의 /TIL/를 BASE_PATH로 변경)
+  if (BASE_PATH === '') {
+    // 로컬 모드: /TIL/ 제거
+    html = html.replace(/\/TIL\//g, '/');
+  } else {
+    // 프로덕션 모드: 이미 /TIL/이 있으므로 그대로 유지
+  }
+  
+  return html;
+}
+
 function copyAssets() {
   if (fs.existsSync(ASSETS_DIR)) {
     const distAssets = path.join(DIST_DIR, 'assets');
@@ -272,6 +288,10 @@ function build() {
   // 인덱스 페이지 생성
   const indexHtml = buildIndexPage(posts, searchData);
   fs.writeFileSync(path.join(DIST_DIR, 'index.html'), indexHtml);
+  
+  // About 페이지 생성
+  const aboutHtml = buildAboutPage();
+  fs.writeFileSync(path.join(DIST_DIR, 'about.html'), aboutHtml);
   
   // 정적 파일 복사
   copyAssets();
