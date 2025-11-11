@@ -426,8 +426,25 @@ function buildSeriesListPage(series) {
 
 function buildAboutPage() {
   const template = loadTemplate('about.html');
+  const aboutMdPath = path.join(__dirname, 'src', 'about.md');
   
-  let html = template;
+  let content = '';
+  if (fs.existsSync(aboutMdPath)) {
+    const mdContent = fs.readFileSync(aboutMdPath, 'utf-8');
+    const { attributes, body } = matter(mdContent);
+    content = marked(body);
+  } else {
+    // 기본 내용 (마크다운 파일이 없을 경우)
+    content = `
+      <div style="text-align: center; margin-bottom: 2rem;">
+        <img src="${BASE_PATH}/assets/images/profile/Ellen.jpg" alt="Profile" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-color);">
+      </div>
+      <h2>안녕하세요! 👋</h2>
+      <p>안녕하세요, 저는 ellenseon입니다. 개발과 학습을 기록하는 공간입니다.</p>
+    `;
+  }
+  
+  let html = template.replace('{{content}}', content);
   
   // 경로 치환 (템플릿의 /TIL/를 BASE_PATH로 변경)
   if (BASE_PATH === '') {
