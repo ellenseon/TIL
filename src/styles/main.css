@@ -624,6 +624,11 @@ main.main-container .content-area {
   gap: var(--spacing-sm);
 }
 
+/* 공유하기 버튼 다음에 오는 시리즈 네비게이션 */
+.post-share + .series-navigation {
+  margin-top: 0;
+}
+
 .series-nav-link {
   display: block;
   padding: var(--spacing-lg) var(--spacing-lg);
@@ -1112,6 +1117,12 @@ main.main-container .content-area {
   display: flex;
   justify-content: flex-end;
   align-items: flex-end;
+}
+
+/* 시리즈 네비게이션 위에 있는 공유하기 버튼 */
+.post-content + .post-share {
+  margin-top: var(--spacing-2xl);
+  margin-bottom: var(--spacing-lg);
 }
 
 .share-btn-main {
