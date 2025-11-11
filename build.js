@@ -33,6 +33,92 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+// 한국 시간대(Asia/Seoul, UTC+9)로 날짜 파싱
+function parseKoreanDate(dateString) {
+  if (!dateString) return new Date();
+  
+  // 이미 Date 객체면 그대로 반환
+  if (dateString instanceof Date) {
+    return dateString;
+  }
+  
+  // 문자열인 경우 파싱
+  let dateStr = dateString.toString().trim();
+  
+  // 날짜 형식이 "YYYY-MM-DD HH:mm" 또는 "YYYY-MM-DD"인 경우
+  // 한국 시간대(UTC+9)로 해석하기 위해 시간대 정보 추가
+  if (/^\d{4}-\d{2}-\d{2}(\s+\d{1,2}:\d{2})?$/.test(dateStr)) {
+    // 시간이 없으면 자정(00:00)으로 설정
+    if (!dateStr.includes(':')) {
+      dateStr += ' 00:00';
+    }
+    // 한국 시간대(UTC+9)로 파싱
+    // ISO 형식으로 변환: "2025-11-12 08:30" -> "2025-11-12T08:30:00+09:00"
+    const [datePart, timePart] = dateStr.split(' ');
+    const [hour, minute = '00'] = timePart.split(':');
+    const isoString = `${datePart}T${hour.padStart(2, '0')}:${minute.padStart(2, '0')}:00+09:00`;
+    return new Date(isoString);
+  }
+  
+  // 다른 형식은 기본 파싱 사용
+  const parsed = new Date(dateString);
+  
+  // 파싱된 날짜가 유효하지 않으면 현재 시간 반환
+  if (isNaN(parsed.getTime())) {
+    return new Date();
+  }
+  
+  // 이미 시간대 정보가 있으면 그대로 사용, 없으면 한국 시간대로 간주
+  // 문자열에 시간대 정보(+09:00, Z 등)가 없으면 한국 시간대 오프셋 적용
+  if (!dateStr.includes('+') && !dateStr.includes('-') && !dateStr.includes('Z') && !dateStr.includes('T')) {
+    // 시간대 정보가 없는 경우, 한국 시간대 오프셋(+9시간) 적용
+    const utcDate = new Date(dateString + 'Z'); // UTC로 파싱 시도
+    if (!isNaN(utcDate.getTime())) {
+      // UTC 시간에서 9시간을 빼서 한국 시간으로 조정
+      // (한국은 UTC+9이므로 UTC 시간에 9시간을 더해야 함)
+      return new Date(utcDate.getTime() + 9 * 60 * 60 * 1000);
+    }
+  }
+  
+  return parsed;
+}
+
+// 한국 시간대 기준 현재 날짜 가져오기 (날짜만, 시간은 0시 0분)
+function getKoreanToday() {
+  const now = new Date();
+  // 한국 시간대(Asia/Seoul)의 현재 날짜 문자열 얻기
+  const koreanDateString = now.toLocaleDateString('en-CA', {
+    timeZone: 'Asia/Seoul'
+  }); // "YYYY-MM-DD" 형식
+  
+  // 날짜만 파싱 (시간은 00:00:00)
+  const [year, month, day] = koreanDateString.split('-').map(Number);
+  return new Date(year, month - 1, day);
+}
+
+// 한국 시간대 기준 현재 시간 가져오기 (시간 포함)
+function getKoreanNow() {
+  const now = new Date();
+  // 한국 시간대(Asia/Seoul)의 현재 시간 정보 얻기
+  const koreanTimeString = now.toLocaleString('en-US', {
+    timeZone: 'Asia/Seoul',
+    year: 'numeric',
+    month: '2-digit',
+    day: '2-digit',
+    hour: '2-digit',
+    minute: '2-digit',
+    second: '2-digit',
+    hour12: false
+  });
+  
+  // "MM/DD/YYYY, HH:mm:ss" 형식을 파싱
+  const [datePart, timePart] = koreanTimeString.split(', ');
+  const [month, day, year] = datePart.split('/').map(Number);
+  const [hour, minute, second] = timePart.split(':').map(Number);
+  
+  return new Date(year, month - 1, day, hour, minute, second);
+}
+
 function loadTemplate(name) {
   return fs.readFileSync(path.join(TEMPLATES_DIR, name), 'utf-8');
 }
@@ -68,15 +154,19 @@ function getAllPosts() {
           ...attributes,
           slug,
           content: html,
-          date: attributes.date || new Date(),
+          date: parseKoreanDate(attributes.date) || new Date(),
           excerpt: attributes.excerpt || body.substring(0, 200) + '...'
         });
       }
     }
   });
   
-  // 날짜순 정렬 (최신순)
-  return posts.sort((a, b) => new Date(b.date) - new Date(a.date));
+  // 날짜순 정렬 (최신순) - 한국 시간대 기준
+  return posts.sort((a, b) => {
+    const dateA = parseKoreanDate(a.date);
+    const dateB = parseKoreanDate(b.date);
+    return dateB - dateA;
+  });
 }
 
 function getSeries(posts) {
@@ -91,9 +181,13 @@ function getSeries(posts) {
     }
   });
   
-  // 각 시리즈의 포스트를 날짜순으로 정렬
+  // 각 시리즈의 포스트를 날짜순으로 정렬 - 한국 시간대 기준
   Object.keys(series).forEach(seriesName => {
-    series[seriesName].sort((a, b) => new Date(a.date) - new Date(b.date));
+    series[seriesName].sort((a, b) => {
+      const dateA = parseKoreanDate(a.date);
+      const dateB = parseKoreanDate(b.date);
+      return dateA - dateB;
+    });
   });
   
   return series;
@@ -496,7 +590,6 @@ ${tagsList}
   
   // 포스트 HTML 생성 (velog 스타일)
   const postsHtml = posts.map(post => {
-    const dateStr = new Date(post.date).toLocaleDateString('ko-KR');
     const relativeDate = getRelativeDate(post.date);
     
     return `
@@ -537,21 +630,23 @@ ${tagsList}
 }
 
 function formatDate(date) {
-  const dateObj = new Date(date);
+  const dateObj = parseKoreanDate(date);
   const hasTime = dateObj.getHours() !== 0 || dateObj.getMinutes() !== 0 || dateObj.getSeconds() !== 0;
   
   if (hasTime) {
-    // 시간이 있으면 날짜와 시간 모두 표시
+    // 시간이 있으면 날짜와 시간 모두 표시 (한국 시간대)
     return dateObj.toLocaleString('ko-KR', {
+      timeZone: 'Asia/Seoul',
       year: 'numeric',
       month: 'long',
       day: 'numeric',
       hour: '2-digit',
       minute: '2-digit'
-    });
+    }) + ' KST';
   } else {
     // 시간이 없으면 날짜만 표시
     return dateObj.toLocaleDateString('ko-KR', {
+      timeZone: 'Asia/Seoul',
       year: 'numeric',
       month: 'long',
       day: 'numeric'
@@ -560,11 +655,53 @@ function formatDate(date) {
 }
 
 function getRelativeDate(date) {
-  const now = new Date();
-  const postDate = new Date(date);
-  const diffTime = now - postDate;
-  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+  // 한국 시간대 기준으로 현재 시간과 포스트 날짜 비교
+  const now = getKoreanNow();
+  const postDate = parseKoreanDate(date);
   
+  // 시간 차이 계산 (밀리초 단위)
+  const diffTime = now - postDate;
+  const diffSeconds = Math.floor(diffTime / 1000);
+  const diffMinutes = Math.floor(diffTime / (1000 * 60));
+  const diffHours = Math.floor(diffTime / (1000 * 60 * 60));
+  
+  // 1일(24시간) 이내인 경우 상대 시간으로 표시
+  if (diffTime >= 0 && diffTime < 24 * 60 * 60 * 1000) {
+    if (diffSeconds < 60) {
+      return '방금 전';
+    } else if (diffMinutes < 60) {
+      return `${diffMinutes}분 전`;
+    } else {
+      return `${diffHours}시간 전`;
+    }
+  }
+  
+  // 1일 이상인 경우 날짜만 비교 (시간 무시)
+  const today = getKoreanToday();
+  const postDateOnly = new Date(
+    postDate.getFullYear(),
+    postDate.getMonth(),
+    postDate.getDate()
+  );
+  const todayOnly = new Date(
+    today.getFullYear(),
+    today.getMonth(),
+    today.getDate()
+  );
+  
+  const diffDays = Math.floor((todayOnly - postDateOnly) / (1000 * 60 * 60 * 24));
+  
+  // 미래 날짜인 경우
+  if (diffDays < 0) {
+    const absDays = Math.abs(diffDays);
+    if (absDays === 1) {
+      return '내일';
+    } else {
+      return `${absDays}일 후`;
+    }
+  }
+  
+  // 과거 날짜인 경우
   if (diffDays === 0) return '오늘';
   if (diffDays === 1) return '어제';
   if (diffDays < 7) return `${diffDays}일 전`;
