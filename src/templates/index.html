@@ -26,34 +26,7 @@
   <link rel="alternate" type="application/rss+xml" title="TIL RSS Feed" href="/TIL/rss.xml">
 </head>
 <body>
-  <header class="site-header">
-    <div class="header-top">
-      <div class="header-left">
-        <h1 class="site-logo"><a href="/TIL/">TIL - Today Ellen Learned</a></h1>
-      </div>
-      <div class="header-right">
-        <a href="/TIL/rss.xml" target="_blank" class="header-icon" title="RSS Feed">
-          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-            <path d="M2.002 2.725a.75.75 0 0 1 .797-.699C8.79 2.42 13.58 7.21 13.974 13.201a.75.75 0 0 1-.699.798H12.3c-.38 0-.7-.282-.75-.653C11.15 9.484 6.516 4.85 1.353 4.45c-.37-.05-.653-.37-.653-.75v-1.5a.75.75 0 0 1 .302-.475z"/>
-            <path d="M2.002 7.725a.75.75 0 0 1 .797-.699C6.79 7.42 8.58 9.21 8.974 13.201a.75.75 0 0 1-.699.798H7.3c-.38 0-.7-.282-.75-.653C6.15 10.484 5.516 9.85 1.353 9.45c-.37-.05-.653-.37-.653-.75v-1.5a.75.75 0 0 1 .302-.475z"/>
-            <circle cx="2.5" cy="13.5" r="1.5"/>
-          </svg>
-        </a>
-      </div>
-    </div>
-    <div class="profile-section">
-      <img src="/TIL/assets/images/profile/Ellen.jpg" alt="Profile" class="profile-image">
-      <div class="profile-info">
-        <h2 class="profile-name">Ellen Seon</h2>
-        <p class="profile-description">If you know Ellen, you will absolutely love her.</p>
-      </div>
-    </div>
-    <nav class="main-nav">
-      <a href="/TIL/" class="nav-tab active">Post</a>
-      <a href="/TIL/series.html" class="nav-tab">Series</a>
-      <a href="/TIL/about.html" class="nav-tab">About</a>
-    </nav>
-  </header>
+  {{header}}
   
   <main class="main-container">
     <div class="search-bar">
@@ -138,11 +111,7 @@
     }
   </script>
   
-  <footer class="site-footer">
-    <div class="container">
-      <p>&copy; 2025 Ellen Seon <a href="https://github.com/ellenseon/TIL?tab=MIT-1-ov-file">MIT License</a></p>
-    </div>
-  </footer>
+  {{footer}}
   
   <script>
     const searchIndex = {{searchIndex}};

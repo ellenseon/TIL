@@ -1,6 +1,6 @@
 ---
 title: 2025년 11월 3주차 OKR
-date: 2025-11-10
+date: 2025-11-10 14:30
 series: TIL
 tags: [OKR, TWIL]
 excerpt: 강의, 창업, 투자, 음악, 건강, 미니멀리즘 프로젝트, 아지트 프로젝트

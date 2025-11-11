@@ -37,6 +37,19 @@ function loadTemplate(name) {
   return fs.readFileSync(path.join(TEMPLATES_DIR, name), 'utf-8');
 }
 
+function getHeader(activeTab = '') {
+  let header = loadTemplate('header.html');
+  // active 클래스 설정
+  header = header.replace(/\{\{navActivePost\}\}/g, activeTab === 'post' ? 'active' : '');
+  header = header.replace(/\{\{navActiveSeries\}\}/g, activeTab === 'series' ? 'active' : '');
+  header = header.replace(/\{\{navActiveAbout\}\}/g, activeTab === 'about' ? 'active' : '');
+  return header;
+}
+
+function getFooter() {
+  return loadTemplate('footer.html');
+}
+
 function getAllPosts() {
   const files = fs.readdirSync(POSTS_DIR);
   const posts = [];
@@ -366,9 +379,11 @@ function buildPostPage(post, allPosts, index, series) {
   }
   
   let html = template
+    .replace(/\{\{header\}\}/g, getHeader('post'))
+    .replace(/\{\{footer\}\}/g, getFooter())
     .replace(/\{\{title\}\}/g, title)
     .replace(/\{\{content\}\}/g, post.content)
-    .replace(/\{\{date\}\}/g, new Date(post.date).toLocaleDateString('ko-KR'))
+    .replace(/\{\{date\}\}/g, formatDate(post.date))
     .replace(/\{\{seriesInfo\}\}/g, seriesInfo)
     .replace(/\{\{tags\}\}/g, (post.tags || []).map(tag => `<span class="tag">${tag}</span>`).join(''))
     .replace(/\{\{description\}\}/g, post.excerpt || title)
@@ -434,6 +449,8 @@ function buildSeriesPage(seriesName, posts) {
   }).join('');
   
   let html = template
+    .replace(/\{\{header\}\}/g, getHeader('series'))
+    .replace(/\{\{footer\}\}/g, getFooter())
     .replace(/\{\{series\}\}/g, seriesName)
     .replace(/\{\{seriesSlug\}\}/g, seriesSlug)
     .replace(/\{\{postCount\}\}/g, posts.length)
@@ -502,6 +519,8 @@ ${tagsList}
   const escapedData = JSON.stringify(searchData);
   
   let html = template
+    .replace(/\{\{header\}\}/g, getHeader('post'))
+    .replace(/\{\{footer\}\}/g, getFooter())
     .replace(/\{\{tagsSidebar\}\}/g, tagsHtml)
     .replace(/\{\{posts\}\}/g, postsHtml)
     .replace(/\{\{searchIndex\}\}/g, escapedData);
@@ -515,6 +534,29 @@ ${tagsList}
   }
   
   return html;
+}
+
+function formatDate(date) {
+  const dateObj = new Date(date);
+  const hasTime = dateObj.getHours() !== 0 || dateObj.getMinutes() !== 0 || dateObj.getSeconds() !== 0;
+  
+  if (hasTime) {
+    // 시간이 있으면 날짜와 시간 모두 표시
+    return dateObj.toLocaleString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
+  } else {
+    // 시간이 없으면 날짜만 표시
+    return dateObj.toLocaleDateString('ko-KR', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  }
 }
 
 function getRelativeDate(date) {
@@ -558,7 +600,10 @@ function buildSeriesListPage(series) {
   
   const seriesListHtml = seriesList ? `<div class="series-list">${seriesList}</div>` : '<p>시리즈가 없습니다.</p>';
   
-  let html = template.replace(/\{\{seriesList\}\}/g, seriesListHtml);
+  let html = template
+    .replace(/\{\{header\}\}/g, getHeader('series'))
+    .replace(/\{\{footer\}\}/g, getFooter())
+    .replace(/\{\{seriesList\}\}/g, seriesListHtml);
   
   // 경로 치환
   if (BASE_PATH === '') {
@@ -588,7 +633,10 @@ function buildAboutPage() {
     `;
   }
   
-  let html = template.replace('{{content}}', content);
+  let html = template
+    .replace(/\{\{header\}\}/g, getHeader('about'))
+    .replace(/\{\{footer\}\}/g, getFooter())
+    .replace(/\{\{content\}\}/g, content);
   
   // 경로 치환 (템플릿의 /TIL/를 BASE_PATH로 변경)
   if (BASE_PATH === '') {
