@@ -5,7 +5,8 @@
   "main": "build.js",
   "scripts": {
     "build": "node build.js",
-    "dev": "node build.js --watch",
+    "build:local": "node build.js --local",
+    "dev": "node build.js --watch --local",
     "serve": "npx http-server dist -p 8080"
   },
   "keywords": ["blog", "til", "static-site"],

@@ -11,6 +11,10 @@ const DIST_DIR = path.join(__dirname, 'dist');
 const TEMPLATES_DIR = path.join(__dirname, 'src', 'templates');
 const ASSETS_DIR = path.join(__dirname, 'assets');
 
+// 로컬 모드 확인 (--local 플래그)
+const isLocalMode = process.argv.includes('--local');
+const BASE_PATH = isLocalMode ? '' : '/TIL';
+
 // Prism 설정
 marked.setOptions({
   highlight: function(code, lang) {
@@ -136,16 +140,19 @@ function buildPostPage(post, allPosts, index) {
     .replace(/\{\{url\}\}/g, url)
     .replace(/\{\{image\}\}/g, post.image || 'https://ellenseon.github.io/TIL/assets/images/profile/Ellen.jpg')
     .replace(/\{\{encodedTitle\}\}/g, encodedTitle)
-    .replace(/\{\{encodedUrl\}\}/g, encodedUrl);
+    .replace(/\{\{encodedUrl\}\}/g, encodedUrl)
+    .replace(/\/TIL\//g, BASE_PATH + '/')
+    .replace(/href="\//g, `href="${BASE_PATH}/`)
+    .replace(/src="\//g, `src="${BASE_PATH}/`);
   
   if (prevPost) {
-    html = html.replace(/\{\{prevPost\}\}/g, `<a href="/TIL/posts/${prevPost.slug}.html" class="nav-link">← ${prevPost.title}</a>`);
+    html = html.replace(/\{\{prevPost\}\}/g, `<a href="${BASE_PATH}/posts/${prevPost.slug}.html" class="nav-link">← ${prevPost.title}</a>`);
   } else {
     html = html.replace(/\{\{prevPost\}\}/g, '');
   }
   
   if (nextPost) {
-    html = html.replace(/\{\{nextPost\}\}/g, `<a href="/TIL/posts/${nextPost.slug}.html" class="nav-link">${nextPost.title} →</a>`);
+    html = html.replace(/\{\{nextPost\}\}/g, `<a href="${BASE_PATH}/posts/${nextPost.slug}.html" class="nav-link">${nextPost.title} →</a>`);
   } else {
     html = html.replace(/\{\{nextPost\}\}/g, '');
   }
@@ -157,13 +164,13 @@ function buildIndexPage(posts, searchData) {
   const template = loadTemplate('index.html');
   const postsHtml = posts.map(post => `
     <article class="post-preview">
-      <h2><a href="/TIL/posts/${post.slug}.html">${post.title || 'Untitled'}</a></h2>
+      <h2><a href="${BASE_PATH}/posts/${post.slug}.html">${post.title || 'Untitled'}</a></h2>
       <div class="post-meta">
         <time>${new Date(post.date).toLocaleDateString('ko-KR')}</time>
         ${(post.tags || []).map(tag => `<span class="tag">${tag}</span>`).join('')}
       </div>
       <p class="excerpt">${post.excerpt}</p>
-      <a href="/TIL/posts/${post.slug}.html" class="read-more">Read more →</a>
+      <a href="${BASE_PATH}/posts/${post.slug}.html" class="read-more">Read more →</a>
     </article>
   `).join('');
   
@@ -172,7 +179,10 @@ function buildIndexPage(posts, searchData) {
   
   return template
     .replace(/\{\{posts\}\}/g, postsHtml)
-    .replace(/\{\{searchIndex\}\}/g, escapedData);
+    .replace(/\{\{searchIndex\}\}/g, escapedData)
+    .replace(/\/TIL\//g, BASE_PATH + '/')
+    .replace(/href="\//g, `href="${BASE_PATH}/`)
+    .replace(/src="\//g, `src="${BASE_PATH}/`);
 }
 
 function copyAssets() {
