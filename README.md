@@ -62,13 +62,25 @@ draft: false
 
 `draft: true`로 설정하면 빌드 시 제외됩니다.
 
+## 프로필 이미지 설정
+
+`assets/images/profile/Ellen.jpg` 파일을 추가하세요. 이 파일이 없으면 프로필 이미지가 표시되지 않습니다.
+
 ## 배포
 
 GitHub Pages에 배포하려면:
 
-1. GitHub 리포지토리 생성
-2. `.github/workflows/deploy.yml` 워크플로우 사용 (자동 배포)
-3. 또는 수동으로 `dist/` 디렉토리 내용을 `gh-pages` 브랜치에 푸시
+1. GitHub에서 `ellenseon/TIL` 리포지토리 생성
+2. 리포지토리 설정에서 Pages 활성화 (GitHub Actions 사용)
+3. 다음 명령어로 푸시:
+   ```bash
+   git push -u origin main
+   ```
+4. `.github/workflows/deploy.yml` 워크플로우가 자동으로 배포를 처리합니다
+
+## Disqus 설정
+
+댓글 기능을 사용하려면 `src/templates/post.html` 파일에서 `YOUR-DISQUS-SHORTNAME`을 실제 Disqus shortname으로 변경하세요.
 
 ## 라이센스
 
