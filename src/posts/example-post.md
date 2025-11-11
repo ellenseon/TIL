@@ -4,7 +4,7 @@ date: 2024-01-15
 series: JavaScript 학습하기
 tags: [javascript, nodejs, tutorial]
 excerpt: 이것은 예시 포스트입니다. TIL 블로그의 기능을 테스트하기 위한 샘플 콘텐츠입니다.
-draft: false
+draft: true
 ---
 
 # 첫 번째 TIL 포스트
