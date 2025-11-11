@@ -3,26 +3,27 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>소개 - TIL</title>
-  <meta name="description" content="ellenseon의 소개 페이지">
+  <title>{{series}} - TIL</title>
+  <meta name="description" content="{{series}} 시리즈 포스트 목록">
   <meta name="author" content="ellenseon">
   
   <!-- Open Graph / Facebook -->
   <meta property="og:type" content="website">
-  <meta property="og:url" content="https://ellenseon.github.io/TIL/about.html">
-  <meta property="og:title" content="소개 - TIL">
-  <meta property="og:description" content="ellenseon의 소개 페이지">
+  <meta property="og:url" content="https://ellenseon.github.io/TIL/series/{{seriesSlug}}.html">
+  <meta property="og:title" content="{{series}} - TIL">
+  <meta property="og:description" content="{{series}} 시리즈 포스트 목록">
   <meta property="og:image" content="https://ellenseon.github.io/TIL/assets/images/profile/Ellen.jpg">
   
   <!-- Twitter -->
   <meta property="twitter:card" content="summary_large_image">
-  <meta property="twitter:url" content="https://ellenseon.github.io/TIL/about.html">
-  <meta property="twitter:title" content="소개 - TIL">
-  <meta property="twitter:description" content="ellenseon의 소개 페이지">
+  <meta property="twitter:url" content="https://ellenseon.github.io/TIL/series/{{seriesSlug}}.html">
+  <meta property="twitter:title" content="{{series}} - TIL">
+  <meta property="twitter:description" content="{{series}} 시리즈 포스트 목록">
   <meta property="twitter:image" content="https://ellenseon.github.io/TIL/assets/images/profile/Ellen.jpg">
   
   <link rel="stylesheet" href="/TIL/styles/main.css">
   <link rel="stylesheet" href="/TIL/styles/prism-github-dark.css">
+  <link rel="alternate" type="application/rss+xml" title="TIL RSS Feed" href="/TIL/rss.xml">
 </head>
 <body>
   <header class="site-header">
@@ -49,51 +50,21 @@
     </div>
     <nav class="main-nav">
       <a href="/TIL/" class="nav-tab">글</a>
-      <a href="/TIL/series.html" class="nav-tab">시리즈</a>
-      <a href="/TIL/about.html" class="nav-tab active">소개</a>
+      <a href="/TIL/series.html" class="nav-tab active">시리즈</a>
+      <a href="/TIL/about.html" class="nav-tab">소개</a>
     </nav>
   </header>
   
   <main class="about-container">
-    <article class="post">
-        <header class="post-header">
-          <h1>About</h1>
-        </header>
-        
-        <div class="post-content">
-          <div style="text-align: center; margin-bottom: 2rem;">
-            <img src="/TIL/assets/images/profile/Ellen.jpg" alt="Profile" style="width: 200px; height: 200px; border-radius: 50%; object-fit: cover; border: 3px solid var(--border-color);">
-          </div>
-          
-          <h2>안녕하세요! 👋</h2>
-          <p>안녕하세요, 저는 ellenseon입니다. 개발과 학습을 기록하는 공간입니다.</p>
-          
-          <h2>관심사</h2>
-          <ul>
-            <li>웹 개발</li>
-            <li>프로그래밍 언어 학습</li>
-            <li>새로운 기술 탐구</li>
-          </ul>
-          
-          <h2>기술 스택</h2>
-          <ul>
-            <li>JavaScript / TypeScript</li>
-            <li>Node.js</li>
-            <li>웹 프론트엔드</li>
-          </ul>
-          
-          <h2>연락처</h2>
-          <p>
-            <a href="https://github.com/ellenseon" target="_blank" rel="noopener noreferrer">GitHub</a>
-          </p>
-          
-          <hr style="margin: 2rem 0; border: none; border-top: 1px solid var(--border-color);">
-          
-          <p style="color: var(--text-secondary); font-style: italic;">
-            이 블로그는 Today I Learned 형식으로 작성된 개발 노트와 학습 기록을 담고 있습니다.
-          </p>
-        </div>
-      </article>
+    <div class="series-header">
+      <h1>{{series}}</h1>
+      <p class="series-count">{{postCount}}개의 글</p>
+      <a href="/TIL/" class="back-link">← 모든 포스트로 돌아가기</a>
+    </div>
+    
+    <div class="series-posts-list">
+      {{posts}}
+    </div>
   </main>
   
   <footer class="site-footer">

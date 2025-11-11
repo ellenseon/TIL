@@ -27,38 +27,103 @@
 </head>
 <body>
   <header class="site-header">
-    <div class="container">
-      <div class="header-content">
-        <img src="/TIL/assets/images/profile/Ellen.jpg" alt="Profile" class="profile-image">
-        <div>
-          <h1><a href="/TIL/">TIL</a></h1>
-          <p class="subtitle">Today I Learned</p>
-        </div>
+    <div class="header-top">
+      <div class="header-left">
+        <h1 class="site-logo"><a href="/TIL/">ellenseon.log</a></h1>
       </div>
-      <nav>
-        <a href="/TIL/">Home</a>
-        <a href="/TIL/about.html">About</a>
-        <a href="/TIL/rss.xml" target="_blank" class="rss-icon" title="RSS Feed">
-          <svg width="16" height="16" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
+      <div class="header-right">
+        <a href="/TIL/rss.xml" target="_blank" class="header-icon" title="RSS Feed">
+          <svg width="20" height="20" viewBox="0 0 16 16" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
             <path d="M2.002 2.725a.75.75 0 0 1 .797-.699C8.79 2.42 13.58 7.21 13.974 13.201a.75.75 0 0 1-.699.798H12.3c-.38 0-.7-.282-.75-.653C11.15 9.484 6.516 4.85 1.353 4.45c-.37-.05-.653-.37-.653-.75v-1.5a.75.75 0 0 1 .302-.475z"/>
             <path d="M2.002 7.725a.75.75 0 0 1 .797-.699C6.79 7.42 8.58 9.21 8.974 13.201a.75.75 0 0 1-.699.798H7.3c-.38 0-.7-.282-.75-.653C6.15 10.484 5.516 9.85 1.353 9.45c-.37-.05-.653-.37-.653-.75v-1.5a.75.75 0 0 1 .302-.475z"/>
             <circle cx="2.5" cy="13.5" r="1.5"/>
           </svg>
         </a>
-      </nav>
+      </div>
     </div>
+    <div class="profile-section">
+      <img src="/TIL/assets/images/profile/Ellen.jpg" alt="Profile" class="profile-image">
+      <div class="profile-info">
+        <h2 class="profile-name">Ellen Seon</h2>
+        <p class="profile-description">If you know Ellen, you will absolutely love her.</p>
+      </div>
+    </div>
+    <nav class="main-nav">
+      <a href="/TIL/" class="nav-tab active">글</a>
+      <a href="/TIL/series.html" class="nav-tab">시리즈</a>
+      <a href="/TIL/about.html" class="nav-tab">소개</a>
+    </nav>
   </header>
   
-  <main class="container">
-    <div class="search-box">
-      <input type="text" id="search-input" placeholder="검색...">
-      <div id="search-results"></div>
-    </div>
-    
-    <div class="posts-list">
-      {{posts}}
+  <main class="main-container">
+    <aside class="sidebar">
+      <div class="tags-sidebar-wrapper">
+        <button class="tags-toggle" id="tags-toggle" aria-label="태그 목록 토글">
+          <span class="tags-toggle-text">태그 목록</span>
+          <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M6 9l6 6 6-6"/>
+          </svg>
+        </button>
+        <div class="tags-sidebar" id="tags-sidebar">
+          {{tagsSidebar}}
+        </div>
+      </div>
+    </aside>
+    <div class="content-area">
+      <div class="content-header">
+        <div class="search-box-small">
+          <input type="text" id="search-input" placeholder="검색...">
+          <div id="search-results"></div>
+        </div>
+      </div>
+      <div class="tags-sidebar-mobile">
+        <div class="tags-sidebar-wrapper">
+          <button class="tags-toggle" id="tags-toggle-mobile" aria-label="태그 목록 토글">
+            <span class="tags-toggle-text">태그 목록</span>
+            <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M6 9l6 6 6-6"/>
+            </svg>
+          </button>
+          <div class="tags-sidebar" id="tags-sidebar-mobile">
+            {{tagsSidebar}}
+          </div>
+        </div>
+      </div>
+      <div class="posts-list">
+        {{posts}}
+      </div>
     </div>
   </main>
+  
+  <script>
+    // 태그 목록 토글 (데스크톱)
+    const tagsToggle = document.getElementById('tags-toggle');
+    const tagsSidebar = document.getElementById('tags-sidebar');
+    
+    if (tagsToggle && tagsSidebar) {
+      // 기본적으로 접힘 상태
+      tagsSidebar.classList.add('collapsed');
+      
+      tagsToggle.addEventListener('click', () => {
+        tagsSidebar.classList.toggle('collapsed');
+        tagsToggle.classList.toggle('active');
+      });
+    }
+    
+    // 태그 목록 토글 (모바일)
+    const tagsToggleMobile = document.getElementById('tags-toggle-mobile');
+    const tagsSidebarMobile = document.getElementById('tags-sidebar-mobile');
+    
+    if (tagsToggleMobile && tagsSidebarMobile) {
+      // 기본적으로 접힘 상태
+      tagsSidebarMobile.classList.add('collapsed');
+      
+      tagsToggleMobile.addEventListener('click', () => {
+        tagsSidebarMobile.classList.toggle('collapsed');
+        tagsToggleMobile.classList.toggle('active');
+      });
+    }
+  </script>
   
   <footer class="site-footer">
     <div class="container">
