@@ -1432,8 +1432,13 @@ main.main-container .content-area {
   }
   
   .tag {
-    padding: var(--spacing-xs) var(--spacing-sm);
-    font-size: var(--font-xs);
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
+  }
+  
+  .post-preview .tag {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.75rem;
   }
   
   .tags-sidebar {

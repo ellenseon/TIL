@@ -49,9 +49,9 @@
       </div>
     </div>
     <nav class="main-nav">
-      <a href="/TIL/" class="nav-tab active">글</a>
-      <a href="/TIL/series.html" class="nav-tab">시리즈</a>
-      <a href="/TIL/about.html" class="nav-tab">소개</a>
+      <a href="/TIL/" class="nav-tab active">Post</a>
+      <a href="/TIL/series.html" class="nav-tab">Series</a>
+      <a href="/TIL/about.html" class="nav-tab">About</a>
     </nav>
   </header>
   
@@ -65,8 +65,8 @@
     <div class="main-content-wrapper">
       <aside class="sidebar">
         <div class="tags-sidebar-wrapper">
-          <button class="tags-toggle" id="tags-toggle" aria-label="태그 목록 토글">
-            <span class="tags-toggle-text">태그 목록</span>
+          <button class="tags-toggle" id="tags-toggle" aria-label="Tags 토글">
+            <span class="tags-toggle-text">Tags</span>
             <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M6 9l6 6 6-6"/>
             </svg>
@@ -79,8 +79,8 @@
       <div class="content-area">
         <div class="tags-sidebar-mobile">
           <div class="tags-sidebar-wrapper">
-            <button class="tags-toggle" id="tags-toggle-mobile" aria-label="태그 목록 토글">
-              <span class="tags-toggle-text">태그 목록</span>
+            <button class="tags-toggle" id="tags-toggle-mobile" aria-label="Tags 토글">
+              <span class="tags-toggle-text">Tags</span>
               <svg class="tags-toggle-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                 <path d="M6 9l6 6 6-6"/>
               </svg>
@@ -98,7 +98,7 @@
   </main>
   
   <script>
-    // 태그 목록 토글 (데스크톱)
+    // Tags 토글 (데스크톱)
     const tagsToggle = document.getElementById('tags-toggle');
     const tagsSidebar = document.getElementById('tags-sidebar');
     
@@ -112,7 +112,7 @@
       });
     }
     
-    // 태그 목록 토글 (모바일)
+    // Tags 토글 (모바일)
     const tagsToggleMobile = document.getElementById('tags-toggle-mobile');
     const tagsSidebarMobile = document.getElementById('tags-sidebar-mobile');
     const tagsWrapperMobile = tagsToggleMobile?.closest('.tags-sidebar-wrapper');
@@ -140,7 +140,7 @@
   
   <footer class="site-footer">
     <div class="container">
-      <p>&copy; 2025 Ellen Seon <a href="https://github.com/ellenseon/TIL/blob/main/LICENSE">MIT License</a></p>
+      <p>&copy; 2025 Ellen Seon <a href="https://github.com/ellenseon/TIL?tab=MIT-1-ov-file">MIT License</a></p>
     </div>
   </footer>
   
