@@ -977,12 +977,13 @@ main.main-container .content-area {
 
 .post-content h4 {
   font-size: 1em;
-  padding: 0;
+  margin-top: var(--spacing-lg); /* 1.5rem */
+  margin-bottom: var(--spacing-sm); /* 0.75rem */
+  padding: 0.25em 0.55em;
   border-bottom: none;
-  display: inline;
-  padding: 0.2em 0.5em;
+  display: inline-block;
   background-color: rgba(194, 224, 255, 0.15); /* 더 밝은 파란색 배경 - 텍스트만 */
-  border-radius: 4px;
+  border-radius: 5px;
   box-decoration-break: clone;
   -webkit-box-decoration-break: clone;
 }
@@ -1569,7 +1570,7 @@ main.main-container .content-area {
   }
   
   .post {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
   
   .post-header {
@@ -1663,12 +1664,12 @@ main.main-container .content-area {
   }
   
   .about-container {
-    padding: 1rem;
+    padding: 1rem 0.5rem;
   }
   
   .series-info {
     margin-bottom: 1rem;
-    padding: 0.75rem 1rem;
+    padding: 0.75rem 0.5rem;
   }
   
   .series-navigation {
