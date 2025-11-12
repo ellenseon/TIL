@@ -30,6 +30,7 @@ function initTagFiltering() {
   tagItems.forEach(item => {
     item.addEventListener('click', (e) => {
       e.preventDefault();
+      e.stopPropagation(); // 포스트 전체 클릭 이벤트 전파 방지
       const tag = item.getAttribute('data-tag') || item.textContent.trim();
       filterByTag(tag);
       

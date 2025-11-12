@@ -13,6 +13,22 @@
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.2);
   --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.3);
   
+  /* 색상 테마 - 더 생생하고 아름다운 색상 */
+  --color-success: #3fb950;
+  --color-success-bg: rgba(63, 185, 80, 0.35);
+  --color-warning: #d29922;
+  --color-warning-bg: rgba(210, 153, 34, 0.35);
+  --color-error: #f85149;
+  --color-error-bg: rgba(248, 81, 73, 0.35);
+  --color-info: #58a6ff;
+  --color-info-bg: rgba(88, 166, 255, 0.35);
+  
+  /* 그라데이션 색상 */
+  --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  --gradient-success: linear-gradient(135deg, #3fb950 0%, #2ea043 100%);
+  --gradient-warning: linear-gradient(135deg, #d29922 0%, #bb8009 100%);
+  --gradient-error: linear-gradient(135deg, #f85149 0%, #da3633 100%);
+  
   /* Spacing Scale */
   --spacing-xs: 0.5rem;
   --spacing-sm: 0.75rem;
@@ -449,6 +465,8 @@ main.main-container .content-area {
   border-radius: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 0;
+  cursor: pointer;
+  position: relative;
 }
 
 .post-preview:hover {
@@ -495,10 +513,15 @@ main.main-container .content-area {
   display: flex;
   flex-wrap: wrap;
   gap: var(--spacing-sm);
+  position: relative;
+  z-index: 10;
 }
 
 .post-tags .tag {
   margin: 0;
+  cursor: pointer;
+  position: relative;
+  z-index: 11;
 }
 
 .post-meta-info {
@@ -759,6 +782,8 @@ main.main-container .content-area {
   border-radius: 0;
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   margin-bottom: 0;
+  cursor: pointer;
+  position: relative;
 }
 
 .series-post-item:hover {
@@ -901,6 +926,28 @@ main.main-container .content-area {
   font-weight: 600;
   line-height: 1.25;
   color: var(--text-primary);
+  position: relative;
+}
+
+.post-content h1::before,
+.post-content h2::before,
+.post-content h3::before {
+  content: '';
+  position: absolute;
+  left: -0.5em;
+  top: 0;
+  bottom: 0;
+  width: 3px;
+  background: var(--gradient-primary);
+  border-radius: 2px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.post-content h1:hover::before,
+.post-content h2:hover::before,
+.post-content h3:hover::before {
+  opacity: 1;
 }
 
 .post-content h1 {
@@ -971,19 +1018,29 @@ main.main-container .content-area {
 .post-content a {
   color: var(--link-color);
   text-decoration: none;
-  transition: color 0.2s ease;
+  transition: all 0.2s ease;
+  border-bottom: 1px solid transparent;
+  padding-bottom: 0.05em;
 }
 
 .post-content a:hover {
   color: var(--link-hover);
-  text-decoration: underline;
+  border-bottom-color: var(--link-hover);
+  background: linear-gradient(180deg, transparent 0%, rgba(88, 166, 255, 0.1) 100%);
+  padding: 0.05em 0.2em;
+  margin: 0 -0.2em;
+  border-radius: 3px;
 }
 
 .post-content blockquote {
-  padding: 0 1em;
+  padding: 1em 1.5em;
   color: var(--text-secondary);
-  border-left: 0.25em solid var(--border-color);
+  border-left: 0.25em solid var(--accent-color);
   margin: 0 0 16px 0;
+  background: linear-gradient(90deg, rgba(88, 166, 255, 0.05) 0%, transparent 100%);
+  border-radius: 0 6px 6px 0;
+  font-style: italic;
+  position: relative;
 }
 
 .post-content blockquote > :first-child {
@@ -998,10 +1055,12 @@ main.main-container .content-area {
   padding: 0.2em 0.4em;
   margin: 0;
   font-size: 85%;
-  background-color: rgba(110, 118, 129, 0.4);
-  border-radius: 6px;
+  background: linear-gradient(135deg, rgba(88, 166, 255, 0.15) 0%, rgba(110, 118, 129, 0.3) 100%);
+  border-radius: 4px;
   font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
-  color: var(--text-primary);
+  color: var(--accent-color);
+  border: 1px solid rgba(88, 166, 255, 0.2);
+  font-weight: 500;
 }
 
 .post-content pre {
@@ -1009,11 +1068,24 @@ main.main-container .content-area {
   overflow: auto;
   font-size: 85%;
   line-height: 1.45;
-  background-color: var(--code-bg);
-  border-radius: 6px;
+  background: linear-gradient(135deg, var(--code-bg) 0%, #1a1f28 100%);
+  border-radius: 8px;
   border: 1px solid var(--border-color);
   margin-bottom: 16px;
   margin-top: 16px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  position: relative;
+}
+
+.post-content pre::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--gradient-primary);
+  border-radius: 8px 8px 0 0;
 }
 
 .post-content pre code {
@@ -1101,6 +1173,60 @@ main.main-container .content-area {
 .post-content del {
   text-decoration: line-through;
   opacity: 0.7;
+}
+
+/* 인라인 색상 스타일 지원 */
+.post-content span[style*="color"] {
+  font-weight: 600;
+  padding: 0.125em 0.25em;
+  border-radius: 4px;
+  transition: all 0.2s ease;
+}
+
+.post-content span[style*="color:green"],
+.post-content span[style*="color: #3fb950"],
+.post-content span[style*="color:#3fb950"],
+.post-content span[style*="color: rgb(63, 185, 80)"],
+.post-content span[style*="color:rgb(63, 185, 80)"] {
+  color: var(--color-success) !important;
+  background-color: var(--color-success-bg);
+  box-shadow: 0 0 0 1px rgba(63, 185, 80, 0.4), 0 2px 4px rgba(63, 185, 80, 0.2);
+}
+
+.post-content span[style*="color:orange"],
+.post-content span[style*="color: #d29922"],
+.post-content span[style*="color:#d29922"],
+.post-content span[style*="color: rgb(210, 153, 34)"],
+.post-content span[style*="color:rgb(210, 153, 34)"] {
+  color: var(--color-warning) !important;
+  background-color: var(--color-warning-bg);
+  box-shadow: 0 0 0 1px rgba(210, 153, 34, 0.4), 0 2px 4px rgba(210, 153, 34, 0.2);
+}
+
+.post-content span[style*="color:red"],
+.post-content span[style*="color: #f85149"],
+.post-content span[style*="color:#f85149"],
+.post-content span[style*="color: rgb(248, 81, 73)"],
+.post-content span[style*="color:rgb(248, 81, 73)"] {
+  color: var(--color-error) !important;
+  background-color: var(--color-error-bg);
+  box-shadow: 0 0 0 1px rgba(248, 81, 73, 0.4), 0 2px 4px rgba(248, 81, 73, 0.2);
+}
+
+.post-content span[style*="color:blue"],
+.post-content span[style*="color: #58a6ff"],
+.post-content span[style*="color:#58a6ff"],
+.post-content span[style*="color: rgb(88, 166, 255)"],
+.post-content span[style*="color:rgb(88, 166, 255)"] {
+  color: var(--color-info) !important;
+  background-color: var(--color-info-bg);
+  box-shadow: 0 0 0 1px rgba(88, 166, 255, 0.4), 0 2px 4px rgba(88, 166, 255, 0.2);
+}
+
+/* 호버 효과 */
+.post-content span[style*="color"]:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
 }
 
 .post-footer {

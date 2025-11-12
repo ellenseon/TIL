@@ -43,6 +43,26 @@
   {{footer}}
   
   <script src="/TIL/scripts/relative-time.js"></script>
+  <script>
+    // 포스트 전체 영역 클릭 가능하게 만들기 (태그 제외)
+    document.addEventListener('DOMContentLoaded', function() {
+      const seriesPosts = document.querySelectorAll('.series-post-item[data-post-url]');
+      
+      seriesPosts.forEach(post => {
+        post.addEventListener('click', function(e) {
+          // 태그나 링크를 클릭한 경우는 기본 동작 유지
+          if (e.target.closest('.post-tags') || e.target.closest('a')) {
+            return;
+          }
+          
+          const url = this.getAttribute('data-post-url');
+          if (url) {
+            window.location.href = url;
+          }
+        });
+      });
+    });
+  </script>
 </body>
 </html>
 

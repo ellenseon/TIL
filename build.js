@@ -15,8 +15,13 @@ const ASSETS_DIR = path.join(__dirname, 'assets');
 const isLocalMode = process.argv.includes('--local');
 const BASE_PATH = isLocalMode ? '' : '/TIL';
 
-// Prism 설정
+// Marked 설정 - HTML 허용 및 Prism 설정
 marked.setOptions({
+  breaks: true, // 줄바꿈 허용
+  gfm: true, // GitHub Flavored Markdown 활성화
+  headerIds: true, // 헤더에 ID 자동 생성
+  mangle: false, // 이메일 주소 난독화 비활성화
+  sanitize: false, // HTML 태그 허용 (sanitize 비활성화)
   highlight: function(code, lang) {
     return `<pre class="language-${lang || 'text'}"><code class="language-${lang || 'text'}">${escapeHtml(code)}</code></pre>`;
   }
@@ -527,7 +532,7 @@ function buildSeriesPage(seriesName, posts) {
     const postDate = parseKoreanDate(post.date);
     const isoDate = postDate.toISOString();
     return `
-    <article class="series-post-item">
+    <article class="series-post-item" data-post-url="${BASE_PATH}/posts/${post.slug}.html">
       <div class="series-post-number">${index + 1}</div>
       <div class="series-post-content">
         <h2><a href="${BASE_PATH}/posts/${post.slug}.html">${post.title || 'Untitled'}</a></h2>
@@ -596,7 +601,7 @@ ${tagsList}
     const isoDate = postDate.toISOString();
     
     return `
-      <article class="post-preview">
+      <article class="post-preview" data-post-url="${BASE_PATH}/posts/${post.slug}.html">
         <h2 class="post-title"><a href="${BASE_PATH}/posts/${post.slug}.html">${post.title || 'Untitled'}</a></h2>
         <div class="post-content-preview">${post.excerpt}</div>
         <div class="post-footer-meta">
