@@ -925,52 +925,66 @@ main.main-container .content-area {
   margin-bottom: 16px;
   font-weight: 600;
   line-height: 1.25;
-  color: var(--text-primary);
   position: relative;
 }
 
-.post-content h1::before,
-.post-content h2::before,
-.post-content h3::before {
-  content: '';
-  position: absolute;
-  left: -0.5em;
-  top: 0;
-  bottom: 0;
-  width: 3px;
-  background: var(--gradient-primary);
-  border-radius: 2px;
-  opacity: 0;
-  transition: opacity 0.3s ease;
+/* 헤더 레벨별 색상 - accent-color 기반 통일된 색상 팔레트 */
+.post-content h1 {
+  color: var(--accent-color); /* #58a6ff - 메인 accent 색상 */
 }
 
-.post-content h1:hover::before,
-.post-content h2:hover::before,
-.post-content h3:hover::before {
-  opacity: 1;
+.post-content h2 {
+  color: #79c0ff; /* accent-hover - 약간 밝은 파란색 */
 }
+
+.post-content h3 {
+  color: #a5d5ff; /* accent-color의 더 밝은 버전 */
+}
+
+.post-content h4 {
+  color: #c2e0ff; /* accent-color의 매우 밝은 버전 */
+}
+
+.post-content h5 {
+  color: var(--text-primary);
+}
+
+.post-content h6 {
+  color: var(--text-secondary);
+}
+
 
 .post-content h1 {
   font-size: 2em;
   padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 2px solid rgba(88, 166, 255, 0.3); /* accent-color 밑줄 */
   margin-top: 0;
 }
 
 .post-content h2 {
   font-size: 1.5em;
   padding-bottom: 0.3em;
-  border-bottom: 1px solid var(--border-color);
+  border-bottom: 2px solid rgba(121, 192, 255, 0.3); /* accent-hover 밑줄 */
   margin-top: 32px;
 }
 
 .post-content h3 {
   font-size: 1.25em;
   margin-top: 24px;
+  padding: 0;
+  border-bottom: none;
 }
 
 .post-content h4 {
   font-size: 1em;
+  padding: 0;
+  border-bottom: none;
+  display: inline;
+  padding: 0.2em 0.5em;
+  background-color: rgba(194, 224, 255, 0.15); /* 더 밝은 파란색 배경 - 텍스트만 */
+  border-radius: 4px;
+  box-decoration-break: clone;
+  -webkit-box-decoration-break: clone;
 }
 
 .post-content h5 {
@@ -1173,6 +1187,33 @@ main.main-container .content-area {
 .post-content del {
   text-decoration: line-through;
   opacity: 0.7;
+}
+
+/* 상태 표시 스타일 - 플랫 디자인 */
+.post-content .status-complete,
+.post-content .status-changed,
+.post-content .status-incomplete,
+.post-content .status-progress {
+  display: inline;
+  font-weight: 600;
+  font-size: 0.95em;
+  margin: 0 0.2em;
+}
+
+.post-content .status-complete {
+  color: var(--color-success); /* Green */
+}
+
+.post-content .status-changed {
+  color: var(--color-warning); /* Orange */
+}
+
+.post-content .status-incomplete {
+  color: var(--color-error); /* Red */
+}
+
+.post-content .status-progress {
+  color: var(--text-secondary); /* Gray */
 }
 
 /* 인라인 색상 스타일 지원 */

@@ -38,6 +38,47 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+// 간단한 상태 표시 문법 처리: [완료], [진행중], [계획변경], [미완료] 등
+function processStatusMarkers(text) {
+  // 상태 표시 패턴
+  const statusMap = {
+    '완료': { class: 'status-complete', color: 'green' },
+    '계획변경': { class: 'status-changed', color: 'orange' },
+    '미완료': { class: 'status-incomplete', color: 'red' },
+    '진행중': { class: 'status-progress', color: 'gray' }
+  };
+  
+  // 링크 패턴을 먼저 임시로 보호 (마크다운 링크와 충돌 방지)
+  const linkPlaceholders = [];
+  let linkIndex = 0;
+  
+  // 마크다운 링크 패턴 [텍스트](url)을 임시로 치환
+  const textWithProtectedLinks = text.replace(/\[([^\]]+)\]\([^\)]+\)/g, (match) => {
+    const placeholder = `__LINK_PLACEHOLDER_${linkIndex}__`;
+    linkPlaceholders[linkIndex] = match;
+    linkIndex++;
+    return placeholder;
+  });
+  
+  // [상태] 패턴을 찾아서 변환 (링크가 아닌 경우만)
+  const processedText = textWithProtectedLinks.replace(/\[([^\]]+)\]/g, (match, status) => {
+    const statusLower = status.trim();
+    const statusInfo = statusMap[statusLower];
+    
+    if (statusInfo) {
+      return `<span class="${statusInfo.class}" data-status="${statusLower}">${status}</span>`;
+    }
+    
+    // 매칭되지 않으면 그대로 반환
+    return match;
+  });
+  
+  // 보호된 링크를 원래대로 복원
+  return processedText.replace(/__LINK_PLACEHOLDER_(\d+)__/g, (match, index) => {
+    return linkPlaceholders[parseInt(index)] || match;
+  });
+}
+
 // 한국 시간대(Asia/Seoul, UTC+9)로 날짜 파싱
 function parseKoreanDate(dateString) {
   if (!dateString) return new Date();
@@ -152,7 +193,9 @@ function getAllPosts() {
       
       // 드래프트는 제외 (draft: true인 경우)
       if (attributes.draft !== true) {
-        const html = marked(body);
+        // 상태 마커 처리 후 마크다운 변환
+        const processedBody = processStatusMarkers(body);
+        const html = marked(processedBody);
         const slug = file.replace('.md', '');
         
         posts.push({
@@ -766,7 +809,8 @@ function buildAboutPage() {
   if (fs.existsSync(aboutMdPath)) {
     const mdContent = fs.readFileSync(aboutMdPath, 'utf-8');
     const { attributes, body } = matter(mdContent);
-    content = marked(body);
+    const processedBody = processStatusMarkers(body);
+    content = marked(processedBody);
   } else {
     // 기본 내용 (마크다운 파일이 없을 경우)
     content = `
