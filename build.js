@@ -38,7 +38,58 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+// 이중 인용구 처리: >> 로 시작하는 줄을 주황색 인용구로 변환
+function processDoubleBlockquote(text) {
+  // >> 로 시작하는 줄을 찾아서 특별한 마커와 함께 일반 인용구(>)로 변환
+  // HTML 주석은 marked가 제거할 수 있으므로, 특별한 텍스트 마커 사용
+  
+  // 줄 단위로 처리
+  const lines = text.split('\n');
+  const processedLines = [];
+  let inDoubleBlockquote = false;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+    
+    // >> 로 시작하는 줄인지 확인
+    if (trimmedLine.startsWith('>>')) {
+      const content = trimmedLine.substring(2).trim();
+      if (!inDoubleBlockquote) {
+        // 이중 인용구 시작 - 특별한 마커 추가 (HTML 주석 대신)
+        processedLines.push(`> __DOUBLE_BLOCKQUOTE_START__${content}`);
+        inDoubleBlockquote = true;
+      } else {
+        // 이중 인용구 계속
+        processedLines.push(`> ${content}`);
+      }
+    } else if (trimmedLine.startsWith('>')) {
+      // 일반 인용구
+      if (inDoubleBlockquote) {
+        processedLines.push('> __DOUBLE_BLOCKQUOTE_END__');
+        inDoubleBlockquote = false;
+      }
+      processedLines.push(line);
+    } else {
+      // 일반 텍스트
+      if (inDoubleBlockquote) {
+        processedLines.push('> __DOUBLE_BLOCKQUOTE_END__');
+        inDoubleBlockquote = false;
+      }
+      processedLines.push(line);
+    }
+  }
+  
+  // 마지막에 열린 인용구 닫기
+  if (inDoubleBlockquote) {
+    processedLines.push('> __DOUBLE_BLOCKQUOTE_END__');
+  }
+  
+  return processedLines.join('\n');
+}
+
 // 간단한 상태 표시 문법 처리: [완료], [진행중], [계획변경], [미완료] 등
+// 그리고 일반 [텍스트]는 볼드 처리
 function processStatusMarkers(text) {
   // 상태 표시 패턴
   const statusMap = {
@@ -66,11 +117,12 @@ function processStatusMarkers(text) {
     const statusInfo = statusMap[statusLower];
     
     if (statusInfo) {
+      // 특정 상태는 색상 스타일 적용
       return `<span class="${statusInfo.class}" data-status="${statusLower}">${status}</span>`;
     }
     
-    // 매칭되지 않으면 그대로 반환
-    return match;
+    // 일반 [텍스트]는 볼드 처리
+    return `**${status}**`;
   });
   
   // 보호된 링크를 원래대로 복원
@@ -193,9 +245,28 @@ function getAllPosts() {
       
       // 드래프트는 제외 (draft: true인 경우)
       if (attributes.draft !== true) {
-        // 상태 마커 처리 후 마크다운 변환
-        const processedBody = processStatusMarkers(body);
-        const html = marked(processedBody);
+        // 이중 인용구 처리 -> 상태 마커 처리 -> 마크다운 변환 -> HTML 후처리 순서
+        let processedBody = processDoubleBlockquote(body);
+        processedBody = processStatusMarkers(processedBody);
+        let html = marked(processedBody);
+        // >> 인용구에 클래스 추가 (특별한 마커 사용)
+        // 마커는 HTML로 변환될 수 있으므로 여러 패턴 확인
+        html = html.replace(/<blockquote>([\s\S]*?)<\/blockquote>/g, (match, content) => {
+          if (content.includes('__DOUBLE_BLOCKQUOTE_START__') || 
+              content.includes('DOUBLE_BLOCKQUOTE_START') ||
+              content.includes('<strong>DOUBLE_BLOCKQUOTE_START</strong>')) {
+            // 마커 제거하고 클래스 추가 (여러 패턴 제거)
+            const cleanedContent = content
+              .replace(/__DOUBLE_BLOCKQUOTE_START__/g, '')
+              .replace(/__DOUBLE_BLOCKQUOTE_END__/g, '')
+              .replace(/<strong>DOUBLE_BLOCKQUOTE_START<\/strong>/gi, '')
+              .replace(/<strong>DOUBLE_BLOCKQUOTE_END<\/strong>/gi, '')
+              .replace(/DOUBLE_BLOCKQUOTE_START/gi, '')
+              .replace(/DOUBLE_BLOCKQUOTE_END/gi, '');
+            return `<blockquote class="double-blockquote">${cleanedContent}</blockquote>`;
+          }
+          return match;
+        });
         const slug = file.replace('.md', '');
         
         posts.push({
@@ -809,8 +880,28 @@ function buildAboutPage() {
   if (fs.existsSync(aboutMdPath)) {
     const mdContent = fs.readFileSync(aboutMdPath, 'utf-8');
     const { attributes, body } = matter(mdContent);
-    const processedBody = processStatusMarkers(body);
-    content = marked(processedBody);
+    // 이중 인용구 처리 -> 상태 마커 처리 -> 마크다운 변환 -> HTML 후처리 순서
+    let processedBody = processDoubleBlockquote(body);
+    processedBody = processStatusMarkers(processedBody);
+    let html = marked(processedBody);
+    // >> 인용구에 클래스 추가 (특별한 마커 사용)
+    // 마커는 HTML로 변환될 수 있으므로 여러 패턴 확인
+    content = html.replace(/<blockquote>([\s\S]*?)<\/blockquote>/g, (match, content) => {
+      if (content.includes('__DOUBLE_BLOCKQUOTE_START__') || 
+          content.includes('DOUBLE_BLOCKQUOTE_START') ||
+          content.includes('<strong>DOUBLE_BLOCKQUOTE_START</strong>')) {
+        // 마커 제거하고 클래스 추가 (여러 패턴 제거)
+        const cleanedContent = content
+          .replace(/__DOUBLE_BLOCKQUOTE_START__/g, '')
+          .replace(/__DOUBLE_BLOCKQUOTE_END__/g, '')
+          .replace(/<strong>DOUBLE_BLOCKQUOTE_START<\/strong>/gi, '')
+          .replace(/<strong>DOUBLE_BLOCKQUOTE_END<\/strong>/gi, '')
+          .replace(/DOUBLE_BLOCKQUOTE_START/gi, '')
+          .replace(/DOUBLE_BLOCKQUOTE_END/gi, '');
+        return `<blockquote class="double-blockquote">${cleanedContent}</blockquote>`;
+      }
+      return match;
+    });
   } else {
     // 기본 내용 (마크다운 파일이 없을 경우)
     content = `
