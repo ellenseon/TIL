@@ -38,6 +38,56 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+// + 로 시작하는 리스트를 파란색 dot으로 표시하기 위한 전처리
+function processPlusList(text) {
+  // 줄 단위로 처리
+  const lines = text.split('\n');
+  const processedLines = [];
+  let inPlusList = false;
+  
+  for (let i = 0; i < lines.length; i++) {
+    const line = lines[i];
+    const trimmedLine = line.trim();
+    
+    // + 로 시작하는 리스트 항목인지 확인 (공백 후 +)
+    if (/^\s*\+/.test(line)) {
+      // + 를 - 로 변환하고 각 항목에 마커 추가
+      const match = line.match(/^(\s*)\+/);
+      if (match) {
+        const indent = match[1];
+        const content = line.substring(match[0].length);
+        if (!inPlusList) {
+          // 플러스 리스트 시작 - 특별한 마커 추가 (HTML 주석 사용)
+          processedLines.push(`${indent}- <!-- PLUS_ITEM -->${content}`);
+          inPlusList = true;
+        } else {
+          // 플러스 리스트 항목 - 각 항목에 마커 추가 (HTML 주석 사용)
+          processedLines.push(`${indent}- <!-- PLUS_ITEM -->${content}`);
+        }
+      } else {
+        processedLines.push(line);
+      }
+    } else if (/^\s*[-*]/.test(line)) {
+      // 일반 리스트 (- 또는 *) - 플러스 리스트 종료 (마커 없이)
+      if (inPlusList) {
+        inPlusList = false;
+      }
+      processedLines.push(line);
+    } else {
+      // 빈 줄이거나 리스트가 아닌 줄
+      if (inPlusList) {
+        inPlusList = false;
+      }
+      processedLines.push(line);
+    }
+  }
+  
+  // 마지막에 열린 리스트 닫기 (마커 없이)
+  // inPlusList는 상태만 추적하고, 마커는 사용하지 않음
+  
+  return processedLines.join('\n');
+}
+
 // 이중 인용구 처리: >> 로 시작하는 줄을 주황색 인용구로 변환
 function processDoubleBlockquote(text) {
   // >> 로 시작하는 줄을 찾아서 특별한 마커와 함께 일반 인용구(>)로 변환
@@ -245,10 +295,83 @@ function getAllPosts() {
       
       // 드래프트는 제외 (draft: true인 경우)
       if (attributes.draft !== true) {
-        // 이중 인용구 처리 -> 상태 마커 처리 -> 마크다운 변환 -> HTML 후처리 순서
-        let processedBody = processDoubleBlockquote(body);
+        // 플러스 리스트 처리 -> 이중 인용구 처리 -> 상태 마커 처리 -> 마크다운 변환 -> HTML 후처리 순서
+        let processedBody = processPlusList(body);
+        processedBody = processDoubleBlockquote(processedBody);
         processedBody = processStatusMarkers(processedBody);
         let html = marked(processedBody);
+        
+        // + 리스트에 클래스 추가 및 각 + 항목에 클래스 추가 (특별한 마커 사용)
+        html = html.replace(/<ul>([\s\S]*?)<\/ul>/g, (match, content) => {
+          if (content.includes('<!-- PLUS_ITEM -->') ||
+              content.includes('__PLUS_ITEM__') ||
+              content.includes('<strong>____</strong>')) {
+            // plus-list 클래스 추가
+            let cleanedContent = content;
+            
+            // 각 + 항목에 plus-item 클래스 추가 (HTML 주석 마커 사용)
+            cleanedContent = cleanedContent.replace(/<li>([\s\S]*?)<!-- PLUS_ITEM -->([\s\S]*?)<\/li>/gi, '<li class="plus-item">$1$2</li>');
+            // 기존 마커 패턴도 처리
+            const liMatches = cleanedContent.match(/<li>[\s\S]*?<\/li>/gi);
+            if (liMatches) {
+              liMatches.forEach(liTag => {
+                if (liTag.includes('<strong>____</strong>') || 
+                    liTag.includes('__PLUS_ITEM__') ||
+                    liTag.includes('<strong>PLUS_ITEM</strong>')) {
+                  const newLiTag = liTag.replace(/<li>/, '<li class="plus-item">');
+                  cleanedContent = cleanedContent.replace(liTag, newLiTag);
+                }
+              });
+            }
+            
+            // plus-item이 없는 항목들을 별도의 ul로 분리
+            const plusItems = [];
+            const normalItems = [];
+            const allItems = cleanedContent.match(/<li[\s\S]*?<\/li>/gi) || [];
+            
+            allItems.forEach(item => {
+              if (item.includes('class="plus-item"')) {
+                plusItems.push(item);
+              } else {
+                normalItems.push(item);
+              }
+            });
+            
+            let result = '';
+            if (plusItems.length > 0) {
+              // 마커 제거
+              let plusContent = plusItems.join('');
+              plusContent = plusContent
+                .replace(/__PLUS_LIST_START__/g, '')
+                .replace(/__PLUS_LIST_END__/g, '')
+                .replace(/__PLUS_ITEM__/g, '')
+                .replace(/<strong>PLUS_LIST_START<\/strong>/gi, '')
+                .replace(/<strong>PLUS_LIST_END<\/strong>/gi, '')
+                .replace(/<strong>PLUS_ITEM<\/strong>/gi, '')
+                .replace(/<strong>____<\/strong>/gi, '')
+                .replace(/<!-- PLUS_ITEM -->/gi, '')
+                .replace(/PLUS_LIST_START/gi, '')
+                .replace(/PLUS_LIST_END/gi, '')
+                .replace(/PLUS_ITEM/gi, '');
+              // 빈 항목 제거
+              plusContent = plusContent.replace(/<li[^>]*>[\s]*<\/li>/gi, '');
+              plusContent = plusContent.replace(/<li[^>]*><br><\/li>/gi, '');
+              result += `<ul class="plus-list">${plusContent}</ul>`;
+            }
+            
+            if (normalItems.length > 0) {
+              let normalContent = normalItems.join('');
+              // 빈 항목 제거
+              normalContent = normalContent.replace(/<li[^>]*>[\s]*<\/li>/gi, '');
+              normalContent = normalContent.replace(/<li[^>]*><br><\/li>/gi, '');
+              result += `<ul>${normalContent}</ul>`;
+            }
+            
+            return result || `<ul class="plus-list">${cleanedContent}</ul>`;
+          }
+          return match;
+        });
+        
         // >> 인용구에 클래스 추가 (특별한 마커 사용)
         // 마커는 HTML로 변환될 수 있으므로 여러 패턴 확인
         html = html.replace(/<blockquote>([\s\S]*?)<\/blockquote>/g, (match, content) => {
@@ -880,10 +1003,83 @@ function buildAboutPage() {
   if (fs.existsSync(aboutMdPath)) {
     const mdContent = fs.readFileSync(aboutMdPath, 'utf-8');
     const { attributes, body } = matter(mdContent);
-    // 이중 인용구 처리 -> 상태 마커 처리 -> 마크다운 변환 -> HTML 후처리 순서
-    let processedBody = processDoubleBlockquote(body);
+    // 플러스 리스트 처리 -> 이중 인용구 처리 -> 상태 마커 처리 -> 마크다운 변환 -> HTML 후처리 순서
+    let processedBody = processPlusList(body);
+    processedBody = processDoubleBlockquote(processedBody);
     processedBody = processStatusMarkers(processedBody);
     let html = marked(processedBody);
+    
+        // + 리스트에 클래스 추가 및 각 + 항목에 클래스 추가 (특별한 마커 사용)
+        html = html.replace(/<ul>([\s\S]*?)<\/ul>/g, (match, content) => {
+          if (content.includes('<!-- PLUS_ITEM -->') ||
+              content.includes('__PLUS_ITEM__') ||
+              content.includes('<strong>____</strong>')) {
+        // plus-list 클래스 추가
+        let cleanedContent = content;
+        
+        // 각 + 항목에 plus-item 클래스 추가 (HTML 주석 마커 사용)
+        cleanedContent = cleanedContent.replace(/<li>([\s\S]*?)<!-- PLUS_ITEM -->([\s\S]*?)<\/li>/gi, '<li class="plus-item">$1$2</li>');
+        // 기존 마커 패턴도 처리
+        const liMatches = cleanedContent.match(/<li>[\s\S]*?<\/li>/gi);
+        if (liMatches) {
+          liMatches.forEach(liTag => {
+            if (liTag.includes('<strong>____</strong>') || 
+                liTag.includes('__PLUS_ITEM__') ||
+                liTag.includes('<strong>PLUS_ITEM</strong>')) {
+              const newLiTag = liTag.replace(/<li>/, '<li class="plus-item">');
+              cleanedContent = cleanedContent.replace(liTag, newLiTag);
+            }
+          });
+        }
+        
+        // plus-item이 없는 항목들을 별도의 ul로 분리
+        const plusItems = [];
+        const normalItems = [];
+        const allItems = cleanedContent.match(/<li[\s\S]*?<\/li>/gi) || [];
+        
+        allItems.forEach(item => {
+          if (item.includes('class="plus-item"')) {
+            plusItems.push(item);
+          } else {
+            normalItems.push(item);
+          }
+        });
+        
+        let result = '';
+        if (plusItems.length > 0) {
+          // 마커 제거
+          let plusContent = plusItems.join('');
+          plusContent = plusContent
+            .replace(/__PLUS_LIST_START__/g, '')
+            .replace(/__PLUS_LIST_END__/g, '')
+            .replace(/__PLUS_ITEM__/g, '')
+            .replace(/<strong>PLUS_LIST_START<\/strong>/gi, '')
+            .replace(/<strong>PLUS_LIST_END<\/strong>/gi, '')
+            .replace(/<strong>PLUS_ITEM<\/strong>/gi, '')
+            .replace(/<strong>____<\/strong>/gi, '')
+            .replace(/<!-- PLUS_ITEM -->/gi, '')
+            .replace(/PLUS_LIST_START/gi, '')
+            .replace(/PLUS_LIST_END/gi, '')
+            .replace(/PLUS_ITEM/gi, '');
+          // 빈 항목 제거
+          plusContent = plusContent.replace(/<li[^>]*>[\s]*<\/li>/gi, '');
+          plusContent = plusContent.replace(/<li[^>]*><br><\/li>/gi, '');
+          result += `<ul class="plus-list">${plusContent}</ul>`;
+        }
+        
+        if (normalItems.length > 0) {
+          let normalContent = normalItems.join('');
+          // 빈 항목 제거
+          normalContent = normalContent.replace(/<li[^>]*>[\s]*<\/li>/gi, '');
+          normalContent = normalContent.replace(/<li[^>]*><br><\/li>/gi, '');
+          result += `<ul>${normalContent}</ul>`;
+        }
+        
+        return result || `<ul class="plus-list">${cleanedContent}</ul>`;
+      }
+      return match;
+    });
+    
     // >> 인용구에 클래스 추가 (특별한 마커 사용)
     // 마커는 HTML로 변환될 수 있으므로 여러 패턴 확인
     content = html.replace(/<blockquote>([\s\S]*?)<\/blockquote>/g, (match, content) => {
