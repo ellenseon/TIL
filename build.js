@@ -164,6 +164,17 @@ function processStatusMarkers(text) {
   // [상태] 패턴을 찾아서 변환 (링크가 아닌 경우만)
   const processedText = textWithProtectedLinks.replace(/\[([^\]]+)\]/g, (match, status) => {
     const statusLower = status.trim();
+    
+    // [별] 특별 처리
+    if (statusLower === '별') {
+      return '⭐';
+    }
+    
+    // [Stretch Goal] 특별 처리 - 빨간색 볼드체
+    if (statusLower === 'Stretch Goal') {
+      return '<strong style="color: var(--color-error);">Stretch Goal</strong>';
+    }
+    
     const statusInfo = statusMap[statusLower];
     
     if (statusInfo) {
