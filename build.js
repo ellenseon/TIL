@@ -146,7 +146,8 @@ function processStatusMarkers(text) {
     '완료': { class: 'status-complete', color: 'green' },
     '계획변경': { class: 'status-changed', color: 'orange' },
     '미완료': { class: 'status-incomplete', color: 'red' },
-    '진행중': { class: 'status-progress', color: 'gray' }
+    '진행중': { class: 'status-progress', color: 'gray' },
+    'Starbucks Day': { class: 'status-complete', color: 'green' }
   };
   
   // 링크 패턴을 먼저 임시로 보호 (마크다운 링크와 충돌 방지)
