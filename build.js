@@ -897,16 +897,18 @@ function formatDate(date) {
       year: 'numeric',
       month: 'long',
       day: 'numeric',
+      weekday: 'long',
       hour: '2-digit',
       minute: '2-digit'
     }) + ' KST';
   } else {
-    // 시간이 없으면 날짜만 표시
+    // 시간이 없으면 날짜만 표시 (요일 포함)
     return dateObj.toLocaleDateString('ko-KR', {
       timeZone: 'Asia/Seoul',
       year: 'numeric',
       month: 'long',
-      day: 'numeric'
+      day: 'numeric',
+      weekday: 'long'
     });
   }
 }
