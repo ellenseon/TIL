@@ -1,7 +1,7 @@
 ---
 title: 워런버핏의 주주서한 Chapter 6: 가치평가 
 date: 2025-12-19 20:00
-series: TIL
+series: Finance
 tags: [가치평가, 워런버핏, 주주서한]
 excerpt: 아래는 워런버핏의 주주서한 Chapter 6을 읽으면서, 익숙하지 않은 용어들을 Gemini와 함께 학습하고, 정리 한 것입니다.
 draft: false
