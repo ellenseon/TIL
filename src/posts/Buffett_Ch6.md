@@ -1,5 +1,5 @@
 ---
-title: 워런버핏의 주주서한 Chapter 6: 가치평가 
+title: 워런버핏의 주주서한 Chapter 6 - 가치평가 
 date: 2025-12-19 20:00
 series: Finance
 tags: [가치평가, 워런버핏, 주주서한]
