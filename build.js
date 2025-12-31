@@ -479,6 +479,12 @@ function slugify(text) {
     .replace(/-+$/, '');
 }
 
+// 비밀번호 해시 함수 (간단한 SHA-256 해시)
+async function hashPassword(password) {
+  const crypto = require('crypto');
+  return crypto.createHash('sha256').update(password).digest('hex');
+}
+
 function buildIndex(posts) {
   const idx = lunr(function() {
     this.ref('slug');
@@ -534,7 +540,7 @@ function buildRSS(posts) {
   return feed.xml();
 }
 
-function buildPostPage(post, allPosts, index, series) {
+async function buildPostPage(post, allPosts, index, series) {
   const template = loadTemplate('post.html');
   
   // 시리즈가 있으면 시리즈 내 네비게이션, 없으면 전체 포스트 네비게이션
@@ -549,6 +555,19 @@ function buildPostPage(post, allPosts, index, series) {
   const url = `https://ellenseon.github.io/TIL/posts/${post.slug}.html`;
   const encodedTitle = encodeURIComponent(title);
   const encodedUrl = encodeURIComponent(url);
+  
+  // 비밀글 처리
+  let passwordHash = '';
+  let isProtected = false;
+  let protectedContent = post.content;
+  let publicContent = post.content;
+  
+  if (post.password) {
+    isProtected = true;
+    passwordHash = await hashPassword(post.password);
+    // 비밀글인 경우 콘텐츠를 숨김
+    publicContent = '';
+  }
   
   if (post.series && series[post.series]) {
     const seriesPosts = series[post.series];
@@ -726,11 +745,33 @@ function buildPostPage(post, allPosts, index, series) {
     `;
   }
   
+  // 비밀글 UI 생성
+  let passwordForm = '';
+  if (isProtected) {
+    passwordForm = `
+      <div class="password-protected" id="password-protected">
+        <div class="password-form-container">
+          <div class="password-icon">🔒</div>
+          <h3>비밀글입니다</h3>
+          <p>이 글을 보려면 비밀번호를 입력하세요.</p>
+          <form id="password-form" class="password-form">
+            <input type="password" id="password-input" class="password-input" placeholder="비밀번호를 입력하세요" autocomplete="off" required>
+            <button type="submit" class="password-submit">확인</button>
+          </form>
+          <div class="password-error" id="password-error" style="display: none;">비밀번호가 올바르지 않습니다.</div>
+        </div>
+      </div>
+      <div class="post-content-protected" id="post-content-protected" style="display: none;" data-password-hash="${passwordHash}">
+        ${protectedContent}
+      </div>
+    `;
+  }
+  
   let html = template
     .replace(/\{\{header\}\}/g, getHeader('post'))
     .replace(/\{\{footer\}\}/g, getFooter())
     .replace(/\{\{title\}\}/g, title)
-    .replace(/\{\{content\}\}/g, post.content)
+    .replace(/\{\{content\}\}/g, isProtected ? passwordForm : post.content)
     .replace(/\{\{date\}\}/g, formatDate(post.date))
     .replace(/\{\{seriesInfo\}\}/g, seriesInfo)
     .replace(/\{\{tags\}\}/g, (post.tags || []).map(tag => `<span class="tag">${tag}</span>`).join(''))
@@ -1179,7 +1220,7 @@ function copyRecursiveSync(src, dest) {
   }
 }
 
-function build() {
+async function build() {
   console.log('Building blog...');
   
   // 디렉토리 생성
@@ -1210,10 +1251,11 @@ function build() {
   fs.writeFileSync(path.join(DIST_DIR, 'rss.xml'), rss);
   
   // 포스트 페이지 생성
-  posts.forEach((post, index) => {
-    const html = buildPostPage(post, posts, index, series);
+  for (let index = 0; index < posts.length; index++) {
+    const post = posts[index];
+    const html = await buildPostPage(post, posts, index, series);
     fs.writeFileSync(path.join(postsDir, `${post.slug}.html`), html);
-  });
+  }
   
   // 시리즈 페이지 생성
   const seriesDir = path.join(DIST_DIR, 'series');
@@ -1261,14 +1303,19 @@ function build() {
 }
 
 // 빌드 실행
-build();
+build().catch(err => {
+  console.error('Build error:', err);
+  process.exit(1);
+});
 
 // Watch 모드
 if (process.argv.includes('--watch')) {
   console.log('Watching for changes...');
   chokidar.watch([POSTS_DIR, TEMPLATES_DIR, path.join(__dirname, 'src', 'styles'), path.join(__dirname, 'src', 'scripts')]).on('change', () => {
     console.log('Change detected, rebuilding...');
-    build();
+    build().catch(err => {
+      console.error('Build error:', err);
+    });
   });
 }
 

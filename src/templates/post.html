@@ -78,6 +78,90 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-json.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-css.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-markdown.min.js"></script>
+  
+  <!-- 비밀글 검증 스크립트 -->
+  <script>
+    (function() {
+      const passwordForm = document.getElementById('password-form');
+      const passwordInput = document.getElementById('password-input');
+      const passwordError = document.getElementById('password-error');
+      const passwordProtected = document.getElementById('password-protected');
+      const postContentProtected = document.getElementById('post-content-protected');
+      
+      if (passwordForm && postContentProtected) {
+        const passwordHash = postContentProtected.getAttribute('data-password-hash');
+        
+        // 비밀번호 해시 함수 (SHA-256)
+        async function hashPassword(password) {
+          const encoder = new TextEncoder();
+          const data = encoder.encode(password);
+          const hashBuffer = await crypto.subtle.digest('SHA-256', data);
+          const hashArray = Array.from(new Uint8Array(hashBuffer));
+          return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
+        
+        // 로컬 스토리지에서 인증 상태 확인
+        const authKey = 'post_auth_' + window.location.pathname;
+        const isAuthenticated = localStorage.getItem(authKey) === passwordHash;
+        
+        if (isAuthenticated) {
+          // 이미 인증된 경우 콘텐츠 표시
+          if (passwordProtected) passwordProtected.style.display = 'none';
+          if (postContentProtected) postContentProtected.style.display = 'block';
+        }
+        
+        passwordForm.addEventListener('submit', async (e) => {
+          e.preventDefault();
+          
+          const inputPassword = passwordInput.value;
+          if (!inputPassword) {
+            passwordError.textContent = '비밀번호를 입력하세요.';
+            passwordError.style.display = 'block';
+            return;
+          }
+          
+          try {
+            const inputHash = await hashPassword(inputPassword);
+            
+            if (inputHash === passwordHash) {
+              // 비밀번호가 맞으면 콘텐츠 표시
+              if (passwordProtected) passwordProtected.style.display = 'none';
+              if (postContentProtected) postContentProtected.style.display = 'block';
+              
+              // 로컬 스토리지에 인증 상태 저장
+              localStorage.setItem(authKey, passwordHash);
+              
+              // 에러 메시지 숨기기
+              if (passwordError) passwordError.style.display = 'none';
+            } else {
+              // 비밀번호가 틀리면 에러 메시지 표시
+              if (passwordError) {
+                passwordError.textContent = '비밀번호가 올바르지 않습니다.';
+                passwordError.style.display = 'block';
+              }
+              passwordInput.value = '';
+              passwordInput.focus();
+            }
+          } catch (error) {
+            console.error('비밀번호 검증 오류:', error);
+            if (passwordError) {
+              passwordError.textContent = '오류가 발생했습니다. 다시 시도해주세요.';
+              passwordError.style.display = 'block';
+            }
+          }
+        });
+        
+        // Enter 키로 제출
+        if (passwordInput) {
+          passwordInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+              passwordForm.dispatchEvent(new Event('submit'));
+            }
+          });
+        }
+      }
+    })();
+  </script>
 </body>
 </html>
 

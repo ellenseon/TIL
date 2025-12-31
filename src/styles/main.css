@@ -1782,3 +1782,104 @@ blockquote.double-blockquote {
   
 }
 
+/* 비밀글 스타일 */
+.password-protected {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+  padding: var(--spacing-xl);
+  margin: var(--spacing-xl) 0;
+}
+
+.password-form-container {
+  max-width: 400px;
+  width: 100%;
+  text-align: center;
+  background-color: var(--bg-secondary);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: var(--spacing-2xl);
+  box-shadow: var(--shadow-md);
+}
+
+.password-icon {
+  font-size: 3rem;
+  margin-bottom: var(--spacing-md);
+}
+
+.password-form-container h3 {
+  font-size: var(--font-xl);
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-primary);
+}
+
+.password-form-container p {
+  color: var(--text-secondary);
+  margin-bottom: var(--spacing-lg);
+  font-size: var(--font-sm);
+}
+
+.password-form {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-md);
+  margin-top: var(--spacing-lg);
+}
+
+.password-input {
+  width: 100%;
+  padding: var(--spacing-md);
+  background-color: var(--bg-primary);
+  border: 1px solid var(--border-color);
+  border-radius: 6px;
+  color: var(--text-primary);
+  font-size: var(--font-md);
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.password-input:focus {
+  outline: none;
+  border-color: var(--accent-color);
+  box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+}
+
+.password-submit {
+  padding: var(--spacing-md) var(--spacing-lg);
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 6px;
+  font-size: var(--font-md);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.password-submit:hover {
+  background-color: var(--accent-hover);
+}
+
+.password-submit:active {
+  transform: scale(0.98);
+}
+
+.password-error {
+  margin-top: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
+  background-color: var(--color-error-bg);
+  color: var(--color-error);
+  border: 1px solid var(--color-error);
+  border-radius: 6px;
+  font-size: var(--font-sm);
+  text-align: center;
+}
+
+.post-content-protected {
+  display: none;
+}
+
+.post-content-protected.show {
+  display: block;
+}
+
